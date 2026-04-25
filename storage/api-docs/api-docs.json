@@ -1,0 +1,749 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API - BORAN S.A.C",
+        "description": "Documentación generada con L5-Swagger y JWT",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://my-default-host.com",
+            "description": "Servidor API"
+        }
+    ],
+    "paths": {
+        "/api/login": {
+            "post": {
+                "tags": ["Autenticación"],
+                "summary": "Iniciar sesión",
+                "description": "Autentica al usuario con email y contraseña y devuelve un token JWT",
+                "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": ["email", "password"],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "usuario@test.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Inicio de sesión exitoso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Inicio de sesión exitoso"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUz..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Credenciales inválidas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Credenciales inválidas"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Errores de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error de validación"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "error": {
+                                                        "type": "string",
+                                                        "example": "El campo email es obligatorio."
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/register": {
+            "post": {
+                "tags": ["Autenticación"],
+                "summary": "Registrar nuevo usuario",
+                "description": "Registra un usuario con rol de Cliente y devuelve un token JWT",
+                "operationId": "8a56853624e025573120a09a4c75d468",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "username",
+                                    "email",
+                                    "password",
+                                    "password_confirmation",
+                                    "nombres"
+                                ],
+                                "properties": {
+                                    "nombres": {
+                                        "type": "string",
+                                        "example": "John"
+                                    },
+                                    "apellido_paterno": {
+                                        "type": "string",
+                                        "example": "Doe",
+                                        "nullable": true
+                                    },
+                                    "apellido_materno": {
+                                        "type": "string",
+                                        "example": "Smith",
+                                        "nullable": true
+                                    },
+                                    "direccion": {
+                                        "type": "string",
+                                        "example": "Av. Siempre Viva 123",
+                                        "nullable": true
+                                    },
+                                    "username": {
+                                        "type": "string",
+                                        "example": "johndoe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "johndoe@test.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "123456"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "123456"
+                                    },
+                                    "imagen": {
+                                        "type": "string",
+                                        "example": "images/user.jpg",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuario registrado con éxito",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuario registrado con éxito"
+                                        },
+                                        "user": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "username": {
+                                                    "type": "string",
+                                                    "example": "johndoe"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "johndoe@test.com"
+                                                },
+                                                "role": {
+                                                    "type": "string",
+                                                    "example": "Cliente"
+                                                },
+                                                "person_id": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUz..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Errores de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error de validación"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "error": {
+                                                        "type": "string",
+                                                        "example": "El correo electrónico ya está en uso."
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/roles": {
+            "get": {
+                "tags": ["Roles"],
+                "summary": "Obtener lista de roles",
+                "description": "Devuelve todos los roles registrados en el sistema.",
+                "operationId": "77e3636d8592997ce9d6d27b50857a69",
+                "responses": {
+                    "200": {
+                        "description": "Lista obtenida correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lista de roles obtenida correctamente."
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "nombre": {
+                                                        "type": "string",
+                                                        "example": "Administrador"
+                                                    },
+                                                    "descripcion": {
+                                                        "type": "string",
+                                                        "example": "Acceso total al sistema"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": ["Roles"],
+                "summary": "Crear un nuevo rol",
+                "description": "Crea un nuevo rol en el sistema.",
+                "operationId": "4a563842fbfcad237f63da43065fca3d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": ["nombre"],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Supervisor"
+                                    },
+                                    "descripcion": {
+                                        "type": "string",
+                                        "example": "Rol con permisos limitados"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Rol creado con éxito",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Rol creado con éxito."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                },
+                                                "nombre": {
+                                                    "type": "string",
+                                                    "example": "Supervisor"
+                                                },
+                                                "descripcion": {
+                                                    "type": "string",
+                                                    "example": "Rol con permisos limitados"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Errores de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error de validación"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "error": {
+                                                        "type": "string",
+                                                        "example": "El nombre del rol es obligatorio."
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/roles/{id}": {
+            "get": {
+                "tags": ["Roles"],
+                "summary": "Obtener un rol específico",
+                "description": "Devuelve los detalles de un rol por su ID.",
+                "operationId": "7fb0667a295b7678a30353aa11739683",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del rol",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rol obtenido correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Rol obtenido correctamente."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "nombre": {
+                                                    "type": "string",
+                                                    "example": "Administrador"
+                                                },
+                                                "descripcion": {
+                                                    "type": "string",
+                                                    "example": "Acceso total al sistema"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Rol no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Recurso no encontrado"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "error": {
+                                                        "type": "string",
+                                                        "example": "El recurso solicitado no existe en el sistema."
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": ["Roles"],
+                "summary": "Actualizar un rol existente",
+                "description": "Permite actualizar los datos de un rol.",
+                "operationId": "786d6990093a8eb3a56931f19a827e43",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del rol",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": ["nombre"],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Cliente Premium"
+                                    },
+                                    "descripcion": {
+                                        "type": "string",
+                                        "example": "Acceso limitado a compras"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Rol actualizado con éxito",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Rol actualizado con éxito."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "nombre": {
+                                                    "type": "string",
+                                                    "example": "Cliente Premium"
+                                                },
+                                                "descripcion": {
+                                                    "type": "string",
+                                                    "example": "Acceso limitado a compras"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Errores de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error de validación"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "error": {
+                                                        "type": "string",
+                                                        "example": "El nombre del rol ya existe."
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": ["Roles"],
+                "summary": "Eliminar un rol",
+                "description": "Elimina un rol si no tiene dependencias relacionadas.",
+                "operationId": "8285c46981c60ad600aa4077307aec04",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del rol",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 3
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rol eliminado con éxito",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Rol eliminado con éxito."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Error de integridad (FK)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error de integridad"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "error": {
+                                                        "type": "string",
+                                                        "example": "No se puede eliminar este rol porque tiene accesos o usuarios relacionados."
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Autenticación",
+            "description": "Autenticación"
+        },
+        {
+            "name": "Roles",
+            "description": "Roles"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "description": "Ingrese el token en el formato: Bearer {tu_token_jwt}"
+            }
+        }
+    },
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ]
+}

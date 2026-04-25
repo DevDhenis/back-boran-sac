@@ -1,0 +1,66 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+
+class User extends Authenticatable implements JWTSubject
+{
+    use HasFactory;
+
+    protected $table = 'users';
+    protected $primaryKey = 'id';
+
+    protected $fillable = [
+        'username',
+        'password',
+        'email',
+        'email_verified_at',
+        'codigo_verificacion',
+        'codigo_recuperacion',
+        'estado_registro',
+        'role_id',
+        'person_id'
+    ];
+
+    protected $hidden = [
+        'password',
+        'codigo_verificacion',
+        'estado_registro',
+    ];
+
+    public function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function person()
+    {
+        return $this->belongsTo(Person::class);
+    }
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
+    public function client()
+    {
+        return $this->hasOne(Client::class, 'person_id', 'person_id');
+    }
+}
