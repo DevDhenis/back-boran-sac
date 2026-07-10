@@ -16,4 +16,12 @@ class ApiResponse
             'message' => $message,
         ], $status);
     }
+
+    /**
+     * Respuesta de acceso denegado (403) con el contrato estándar: { success:false, message }.
+     */
+    public static function forbidden(string $message = 'No autorizado'): JsonResponse
+    {
+        return self::error($message, 403);
+    }
 }
