@@ -7,13 +7,21 @@ use Illuminate\Http\JsonResponse;
 class ApiResponse
 {
     /**
-     * Respuesta de acceso denegado (403) con el contrato estándar: { success:false, message }.
+     * Respuesta de error estándar del proyecto: { success:false, message }.
      */
-    public static function forbidden(string $message = 'No autorizado'): JsonResponse
+    public static function error(string $message, int $status = 400): JsonResponse
     {
         return response()->json([
             'success' => false,
             'message' => $message,
-        ], 403);
+        ], $status);
+    }
+
+    /**
+     * Respuesta de acceso denegado (403) con el contrato estándar: { success:false, message }.
+     */
+    public static function forbidden(string $message = 'No autorizado'): JsonResponse
+    {
+        return self::error($message, 403);
     }
 }
