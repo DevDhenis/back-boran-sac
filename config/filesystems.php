@@ -60,6 +60,13 @@ return [
             'report' => false,
         ],
 
+        // Requerido por cloudinary-labs/cloudinary-laravel: el SDK se construye
+        // a partir de esta 'url' (leída de CLOUDINARY_URL).
+        'cloudinary' => [
+            'driver' => 'cloudinary',
+            'url' => env('CLOUDINARY_URL'),
+        ],
+
     ],
 
     /*
