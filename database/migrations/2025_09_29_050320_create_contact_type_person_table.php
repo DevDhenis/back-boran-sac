@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('person_id')->constrained('persons');
             $table->foreignId('contact_type_id')->constrained('contact_types');
-            $table->string('valor')->nullable();
+            $table->string('value')->nullable();
             $table->unique(['person_id', 'contact_type_id']);
             $table->timestamps();
         });

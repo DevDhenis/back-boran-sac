@@ -11,9 +11,9 @@ return new class extends Migration
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
             $table->foreignId('person_id')->constrained('persons');
-            $table->string('horario_laboral');
-            $table->decimal('sueldo', 10, 2);
-            $table->char('estado_registro', 1)->default('A');
+            $table->string('work_schedule');
+            $table->decimal('salary', 10, 2);
+            $table->char('status', 1)->default('A');
             $table->timestamps();
         });
     }

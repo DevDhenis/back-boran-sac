@@ -14,7 +14,6 @@ use Illuminate\Http\JsonResponse;
 
 class PasswordResetController extends Controller
 {
-
     public function __construct(
         private AuthService $authService
     ) {
@@ -26,12 +25,14 @@ class PasswordResetController extends Controller
         $user = User::where('email', $request->email)->where('is_active', true)->first();
         if (is_null($user->email_verified_at)) {
             $this->authService->sendCode($user, AuthCodeTypeEnum::EMAIL_VERIFICATION);
+
             return response()->json([
                 'message' => 'Cuenta no verificada. Por favor verifica tu correo electrónico.',
-                'requires_verification' => true
+                'requires_verification' => true,
             ], 403);
         }
         $this->authService->sendCode($user, AuthCodeTypeEnum::RESET_PASSWORD);
+
         return response()->json([
             'success' => true,
             'message' => 'Se envió un código de recuperación a tu correo.',
@@ -42,7 +43,7 @@ class PasswordResetController extends Controller
     {
         return response()->json([
             'success' => true,
-            'message' => 'Código válido.'
+            'message' => 'Código válido.',
         ], 200);
     }
 
@@ -52,7 +53,7 @@ class PasswordResetController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Contraseña actualizada correctamente.'
+            'message' => 'Contraseña actualizada correctamente.',
         ], 200);
     }
 
@@ -62,16 +63,18 @@ class PasswordResetController extends Controller
 
         if (is_null($user->email_verified_at)) {
             $this->authService->sendCode($user, AuthCodeTypeEnum::EMAIL_VERIFICATION);
+
             return response()->json([
                 'message' => 'Cuenta no verificada. Por favor verifica tu correo electrónico.',
-                'requires_verification' => true
+                'requires_verification' => true,
             ], 403);
         }
 
         $this->authService->sendCode($user, AuthCodeTypeEnum::RESET_PASSWORD);
+
         return response()->json([
             'success' => true,
-            'message' => __('Código de recuperación reenviado correctamente')
+            'message' => __('Código de recuperación reenviado correctamente'),
         ]);
     }
 }

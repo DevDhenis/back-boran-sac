@@ -4,55 +4,52 @@ namespace App\Mail;
 
 use App\Models\Person;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class CodigoVerificacionEmail extends Mailable
+class RecoveryCodeMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
-     * Create a new message instance.
+     * Crear una nueva instancia del mensaje.
      */
     public function __construct(
-        public string $codigo,
-        public Person $persona
+        public string $code,
+        public Person $person
     ) {
-        $this->codigo = $codigo;
-        $this->persona = $persona;
+        $this->code = $code;
+        $this->person = $person;
     }
 
     /**
-     * Get the message envelope.
+     * Definir el asunto (subject) del correo.
      */
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Tu código de verificación',
+            subject: 'Código de recuperación de contraseña',
         );
     }
 
     /**
-     * Get the message content definition.
+     * Definir el contenido del correo.
      */
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.codigo-verificacion',
+            markdown: 'emails.recovery-code',
             with: [
-                'codigo' => $this->codigo,
-                'persona' => $this->persona,
+                'code' => $this->code,
+                'person' => $this->person,
             ]
         );
     }
 
     /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     * Archivos adjuntos (si los hubiera).
      */
     public function attachments(): array
     {

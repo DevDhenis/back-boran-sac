@@ -16,8 +16,8 @@ class UnitController extends Controller
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'nombre' => 'required|string|max:100',
-            'abreviatura' => 'required|string|max:10',
+            'name' => 'required|string|max:100',
+            'abbreviation' => 'required|string|max:10',
         ]);
 
         $unit = Unit::create($data);
@@ -25,7 +25,7 @@ class UnitController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Unidad creada correctamente.',
-            'data' => $unit
+            'data' => $unit,
         ], 201);
     }
 
@@ -37,8 +37,8 @@ class UnitController extends Controller
     public function update(Request $request, Unit $unit): JsonResponse
     {
         $data = $request->validate([
-            'nombre' => 'sometimes|string|max:100',
-            'abreviatura' => 'sometimes|string|max:10',
+            'name' => 'sometimes|string|max:100',
+            'abbreviation' => 'sometimes|string|max:10',
         ]);
 
         $unit->update($data);
@@ -46,7 +46,7 @@ class UnitController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Unidad actualizada.',
-            'data' => $unit
+            'data' => $unit,
         ]);
     }
 
@@ -56,7 +56,7 @@ class UnitController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Unidad eliminada.'
+            'message' => 'Unidad eliminada.',
         ]);
     }
 }

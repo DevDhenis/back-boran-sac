@@ -2,13 +2,13 @@
 
 namespace App\Support;
 
-use Illuminate\Http\UploadedFile;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Illuminate\Http\UploadedFile;
 
 class ImageUploader
 {
     /**
-     * Sube una imagen y devuelve el valor a guardar en la columna `imagen`.
+     * Sube una image y devuelve el value a guardar en la columna `image`.
      *
      * Según config('images.driver'):
      * - 'cloudinary' -> URL segura (https) de Cloudinary.

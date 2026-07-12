@@ -22,21 +22,21 @@ class StoreInventoryRequest extends FormRequest
     {
         return [
             'product_id' => 'required|exists:products,id',
-            'tipo_movimiento' => 'required|in:entrada,salida,ajuste',
-            'cantidad' => 'required|numeric|min:0.001',
-            'motivo' => 'nullable|string|max:255',
+            'movement_type' => 'required|in:inbound,outbound,adjustment',
+            'quantity' => 'required|numeric|min:0.001',
+            'reason' => 'nullable|string|max:255',
             'employee_id' => 'nullable|exists:employees,id',
-            'stock_despues' => 'nullable|numeric|min:0', // requerido solo si tipo_movimiento == ajuste
+            'stock_after' => 'nullable|numeric|min:0', // requerido solo si movement_type == adjustment
         ];
     }
 
     /**
-     * Validación condicional: stock_despues es obligatorio solo si el tipo es 'ajuste'.
+     * Validación condicional: stock_after es obligatorio solo si el tipo es 'adjustment'.
      */
     public function withValidator($validator): void
     {
-        $validator->sometimes('stock_despues', 'required|numeric|min:0', function ($input) {
-            return $input->tipo_movimiento === 'ajuste';
+        $validator->sometimes('stock_after', 'required|numeric|min:0', function ($input) {
+            return $input->movement_type === 'adjustment';
         });
     }
 }

@@ -13,13 +13,13 @@ class PersonSeeder extends Seeder
 
         // 👤 Persona administrador
         DB::table('persons')->updateOrInsert(
-            ['numero_documento' => '99999999'],
+            ['document_number' => '99999999'],
             [
-                'nombres' => 'Administrador',
-                'apellido_paterno' => 'General',
-                'apellido_materno' => null,
-                'direccion' => 'Oficina principal',
-                'imagen' => $avatarPath,
+                'first_name' => 'Administrador',
+                'last_name' => 'General',
+                'second_last_name' => null,
+                'address' => 'Oficina principal',
+                'image' => $avatarPath,
                 'document_type_id' => 1,
                 'updated_at' => now(),
                 'created_at' => now(),
@@ -28,13 +28,13 @@ class PersonSeeder extends Seeder
 
         // 👤 Persona cliente
         DB::table('persons')->updateOrInsert(
-            ['numero_documento' => '88888888'],
+            ['document_number' => '88888888'],
             [
-                'nombres' => 'Cliente',
-                'apellido_paterno' => 'Demo',
-                'apellido_materno' => 'Usuario',
-                'direccion' => 'Av. Prueba 123',
-                'imagen' => $avatarPath,
+                'first_name' => 'Cliente',
+                'last_name' => 'Demo',
+                'second_last_name' => 'Usuario',
+                'address' => 'Av. Prueba 123',
+                'image' => $avatarPath,
                 'document_type_id' => 1,
                 'updated_at' => now(),
                 'created_at' => now(),
@@ -43,13 +43,13 @@ class PersonSeeder extends Seeder
 
         // 👤 Persona cliente 2
         DB::table('persons')->updateOrInsert(
-            ['numero_documento' => '77777777'],
+            ['document_number' => '77777777'],
             [
-                'nombres' => 'Cliente',
-                'apellido_paterno' => 'Demo2',
-                'apellido_materno' => 'Usuario2',
-                'direccion' => 'Av. Secundaria 456',
-                'imagen' => $avatarPath,
+                'first_name' => 'Cliente',
+                'last_name' => 'Demo2',
+                'second_last_name' => 'Usuario2',
+                'address' => 'Av. Secundaria 456',
+                'image' => $avatarPath,
                 'document_type_id' => 1,
                 'updated_at' => now(),
                 'created_at' => now(),

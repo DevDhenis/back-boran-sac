@@ -11,18 +11,18 @@ class ShoppingCartItem extends Model
     protected $fillable = [
         'shopping_cart_id',
         'product_id',
-        'cantidad',
-        'precio_final',
-        'descuento',
-        'precio_unitario',
+        'quantity',
+        'final_price',
+        'discount',
+        'unit_price',
         'subtotal',
     ];
 
     protected $casts = [
-        'cantidad'          => 'decimal:2',
-        'precio_unitario'   => 'decimal:2',
-        'subtotal'          => 'decimal:2',
-        'precio_final'      => 'decimal:2',
+        'quantity' => 'decimal:2',
+        'unit_price' => 'decimal:2',
+        'subtotal' => 'decimal:2',
+        'final_price' => 'decimal:2',
     ];
 
     public function cart()
@@ -37,11 +37,13 @@ class ShoppingCartItem extends Model
 
     public function getPrecioFinalAttribute()
     {
-        if (!is_null($this->attributes['descuento']) && $this->attributes['descuento'] > 0) {
-            $descuentoDecimal = $this->attributes['descuento'] / 100;
-            $precioConDescuento = $this->attributes['precio_unitario'] * (1 - $descuentoDecimal);
+        if (! is_null($this->attributes['discount']) && $this->attributes['discount'] > 0) {
+            $descuentoDecimal = $this->attributes['discount'] / 100;
+            $precioConDescuento = $this->attributes['unit_price'] * (1 - $descuentoDecimal);
+
             return round($precioConDescuento, 2);
         }
-        return $this->attributes['precio_unitario'];
+
+        return $this->attributes['unit_price'];
     }
 }

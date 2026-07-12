@@ -15,16 +15,15 @@ class PurchaseHistoryController extends Controller
 
         $query = Sale::query()
             ->with([
-                'customer.person:id,nombres,apellido_paterno,apellido_materno',
-                'payments'
+                'customer.person:id,first_name,last_name,second_last_name',
+                'payments',
             ])
-            ->when($request->date_from, fn($q) => $q->whereDate('sale_date', '>=', $request->date_from))
-            ->when($request->date_to, fn($q) => $q->whereDate('sale_date', '<=', $request->date_to))
-            ->when($request->status, fn($q) => $q->where('status', $request->status))
+            ->when($request->date_from, fn ($q) => $q->whereDate('sale_date', '>=', $request->date_from))
+            ->when($request->date_to, fn ($q) => $q->whereDate('sale_date', '<=', $request->date_to))
+            ->when($request->status, fn ($q) => $q->where('status', $request->status))
             ->when(
                 $request->payment_method,
-                fn($q) =>
-                $q->whereHas('payments', fn($p) => $p->where('method', $request->payment_method))
+                fn ($q) => $q->whereHas('payments', fn ($p) => $p->where('method', $request->payment_method))
             );
 
         $results = $query->orderBy('sale_date', 'desc')->paginate($perPage);
@@ -38,7 +37,7 @@ class PurchaseHistoryController extends Controller
                 'last_page' => $results->lastPage(),
                 'per_page' => $results->perPage(),
                 'total' => $results->total(),
-            ]
+            ],
         ]);
     }
 
@@ -49,13 +48,13 @@ class PurchaseHistoryController extends Controller
             'payments',
             'statusHistories',
             'customer.person',
-            'employee.person'
+            'employee.person',
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Detalle de compra',
-            'data' => new PurchaseResource($sale)
+            'data' => new PurchaseResource($sale),
         ]);
     }
 
@@ -64,7 +63,7 @@ class PurchaseHistoryController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Historial de estados',
-            'data' => $sale->statusHistories
+            'data' => $sale->statusHistories,
         ]);
     }
 }

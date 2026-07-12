@@ -16,13 +16,13 @@ class EmployeeFactory extends Factory
 
         return [
             'person_id' => $person->id,
-            'horario_laboral' => $this->faker->randomElement([
+            'work_schedule' => $this->faker->randomElement([
                 'Lunes a viernes 9am-6pm',
                 'Turno noche 10pm-6am',
                 'Horario flexible',
             ]),
-            'sueldo' => $this->faker->randomFloat(3, 1000, 3000),
-            'estado_registro' => 'A',
+            'salary' => $this->faker->randomFloat(3, 1000, 3000),
+            'status' => 'A',
         ];
     }
 }

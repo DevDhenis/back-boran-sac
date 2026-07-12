@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('sale_id')->constrained('sales');
-            $table->enum('method', ['tarjeta']);
+            $table->enum('method', ['card']);
             $table->decimal('amount', 10, 2);
             $table->dateTime('payment_date');
-            $table->enum('status', ['confirmado', 'fallido']);
+            $table->enum('status', ['confirmed', 'failed']);
             $table->string('card_holder');
             $table->string('card_last4');
             $table->string('card_expiration');

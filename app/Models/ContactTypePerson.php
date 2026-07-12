@@ -10,12 +10,13 @@ class ContactTypePerson extends Model
     use HasFactory;
 
     protected $table = 'contact_type_person';
+
     protected $primaryKey = 'id';
 
     protected $fillable = [
         'person_id',
         'contact_type_id',
-        'valor',
+        'value',
     ];
 
     public function person()

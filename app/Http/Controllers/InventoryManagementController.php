@@ -13,13 +13,23 @@ class InventoryManagementController extends Controller
 {
     public function index(): JsonResponse
     {
-        $query = InventoryManagement::with(['product', 'employee'])->orderByDesc('fecha_movimiento');
+        $query = InventoryManagement::with(['product', 'employee'])->orderByDesc('movement_date');
 
-        if (request('product_id')) $query->where('product_id', request('product_id'));
-        if (request('tipo_movimiento')) $query->where('tipo_movimiento', request('tipo_movimiento'));
-        if (request('employee_id')) $query->where('employee_id', request('employee_id'));
-        if (request('from')) $query->where('fecha_movimiento', '>=', request('from'));
-        if (request('to')) $query->where('fecha_movimiento', '<=', request('to'));
+        if (request('product_id')) {
+            $query->where('product_id', request('product_id'));
+        }
+        if (request('movement_type')) {
+            $query->where('movement_type', request('movement_type'));
+        }
+        if (request('employee_id')) {
+            $query->where('employee_id', request('employee_id'));
+        }
+        if (request('from')) {
+            $query->where('movement_date', '>=', request('from'));
+        }
+        if (request('to')) {
+            $query->where('movement_date', '<=', request('to'));
+        }
 
         $perPage = (int) request('per_page', 15);
         $data = $query->paginate($perPage);
@@ -37,34 +47,34 @@ class InventoryManagementController extends Controller
         return DB::transaction(function () use ($request) {
             $product = Product::lockForUpdate()->findOrFail($request->product_id);
 
-            $stockAntes = (float) $product->stock;
-            $cantidad = (float) $request->cantidad;
-            $tipo = $request->tipo_movimiento;
+            $stockBefore = (float) $product->stock;
+            $quantity = (float) $request->quantity;
+            $type = $request->movement_type;
 
-            if ($tipo === 'salida' && $cantidad > $stockAntes) {
+            if ($type === 'outbound' && $quantity > $stockBefore) {
                 return response()->json(['message' => 'Stock insuficiente'], 422);
             }
 
-            $stockDespues = match ($tipo) {
-                'entrada' => $stockAntes + $cantidad,
-                'salida' => $stockAntes - $cantidad,
-                'ajuste' => $request->filled('stock_despues') ? (float) $request->stock_despues : $stockAntes,
+            $stockAfter = match ($type) {
+                'inbound' => $stockBefore + $quantity,
+                'outbound' => $stockBefore - $quantity,
+                'adjustment' => $request->filled('stock_after') ? (float) $request->stock_after : $stockBefore,
             };
 
-            $mov = InventoryManagement::create([
+            $movement = InventoryManagement::create([
                 'product_id' => $product->id,
                 'employee_id' => $request->employee_id,
-                'tipo_movimiento' => $tipo,
-                'cantidad' => $cantidad,
-                'motivo' => $request->motivo,
-                'stock_antes' => $stockAntes,
-                'stock_despues' => $stockDespues,
+                'movement_type' => $type,
+                'quantity' => $quantity,
+                'reason' => $request->reason,
+                'stock_before' => $stockBefore,
+                'stock_after' => $stockAfter,
             ]);
 
-            $product->stock = $stockDespues;
+            $product->stock = $stockAfter;
             $product->save();
 
-            return response()->json($mov->load(['product', 'employee']), 201);
+            return response()->json($movement->load(['product', 'employee']), 201);
         });
     }
 
@@ -73,31 +83,31 @@ class InventoryManagementController extends Controller
         return DB::transaction(function () use ($request, $inventoryManagement) {
             $product = Product::lockForUpdate()->findOrFail($request->product_id);
 
-            $stockAntes = (float) $product->stock;
-            $cantidad = (float) $request->cantidad;
-            $tipo = $request->tipo_movimiento;
+            $stockBefore = (float) $product->stock;
+            $quantity = (float) $request->quantity;
+            $type = $request->movement_type;
 
-            if ($tipo === 'salida' && $cantidad > $stockAntes) {
+            if ($type === 'outbound' && $quantity > $stockBefore) {
                 return response()->json(['message' => 'Stock insuficiente'], 422);
             }
 
-            $stockDespues = match ($tipo) {
-                'entrada' => $stockAntes + $cantidad,
-                'salida' => $stockAntes - $cantidad,
-                'ajuste' => $request->filled('stock_despues') ? (float) $request->stock_despues : $stockAntes,
+            $stockAfter = match ($type) {
+                'inbound' => $stockBefore + $quantity,
+                'outbound' => $stockBefore - $quantity,
+                'adjustment' => $request->filled('stock_after') ? (float) $request->stock_after : $stockBefore,
             };
 
             $inventoryManagement->update([
                 'product_id' => $product->id,
                 'employee_id' => $request->employee_id,
-                'tipo_movimiento' => $tipo,
-                'cantidad' => $cantidad,
-                'motivo' => $request->motivo,
-                'stock_antes' => $stockAntes,
-                'stock_despues' => $stockDespues,
+                'movement_type' => $type,
+                'quantity' => $quantity,
+                'reason' => $request->reason,
+                'stock_before' => $stockBefore,
+                'stock_after' => $stockAfter,
             ]);
 
-            $product->stock = $stockDespues;
+            $product->stock = $stockAfter;
             $product->save();
 
             return response()->json($inventoryManagement->load(['product', 'employee']));
@@ -107,17 +117,17 @@ class InventoryManagementController extends Controller
     public function destroy(InventoryManagement $inventoryManagement): JsonResponse
     {
         return DB::transaction(function () use ($inventoryManagement) {
-            if ($inventoryManagement->estado_registro === 'anulado') {
+            if ($inventoryManagement->status === 'voided') {
                 return response()->json(['message' => 'Movimiento ya anulado'], 422);
             }
 
             $product = Product::lockForUpdate()->find($inventoryManagement->product_id);
             if ($product) {
-                $product->stock = $inventoryManagement->stock_antes;
+                $product->stock = $inventoryManagement->stock_before;
                 $product->save();
             }
 
-            $inventoryManagement->update(['estado_registro' => 'anulado']);
+            $inventoryManagement->update(['status' => 'voided']);
 
             return response()->json(['message' => 'Movimiento anulado correctamente']);
         });

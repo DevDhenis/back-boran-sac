@@ -15,16 +15,16 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->foreignId('employee_id')->nullable()->constrained('employees')->nullOnDelete();
-            $table->enum('tipo_movimiento', ['entrada', 'salida', 'ajuste']);
-            $table->decimal('cantidad', 12, 2)->unsigned();
-            $table->string('motivo')->nullable();
-            $table->decimal('stock_antes', 12, 2);
-            $table->decimal('stock_despues', 12, 2);
-            $table->timestamp('fecha_movimiento')->useCurrent();
-            $table->string('estado_registro', 20)->default('activo');
+            $table->enum('movement_type', ['inbound', 'outbound', 'adjustment']);
+            $table->decimal('quantity', 12, 2)->unsigned();
+            $table->string('reason')->nullable();
+            $table->decimal('stock_before', 12, 2);
+            $table->decimal('stock_after', 12, 2);
+            $table->timestamp('movement_date')->useCurrent();
+            $table->string('status', 20)->default('active');
             $table->timestamps();
 
-            $table->index(['product_id', 'fecha_movimiento']);
+            $table->index(['product_id', 'movement_date']);
         });
     }
 

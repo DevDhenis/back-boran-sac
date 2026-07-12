@@ -18,10 +18,10 @@ class PaymentFactory extends Factory
     {
         return [
             'sale_id' => null, // se asigna manualmente en el seeder
-            'method' => 'tarjeta',
+            'method' => 'card',
             'amount' => $this->faker->randomFloat(2, 20, 300),
             'payment_date' => $this->faker->dateTimeBetween('-30 days', 'now'),
-            'status' => $this->faker->randomElement(['pendiente', 'confirmado', 'fallido']),
+            'status' => $this->faker->randomElement(['pending', 'confirmed', 'failed']),
             'card_holder' => $this->faker->name(),
             'card_last4' => str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT),
             'card_expiration' => '12/30',

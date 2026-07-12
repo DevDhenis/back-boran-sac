@@ -10,14 +10,14 @@ class ProductPublicResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'nombre' => $this->nombre,
-            'descripcion' => $this->descripcion,
-            'precio' => $this->pre_uni,
-            'imagen' => $this->imagen,
+            'name' => $this->name,
+            'description' => $this->description,
+            'precio' => $this->unit_price,
+            'image' => $this->image,
             'stock' => $this->stock,
-            'en_promocion' => $this->en_promocion,
-            'categoria' => $this->category->nombre ?? null,
-            'unidad' => $this->unit->abreviatura ?? null,
+            'on_promotion' => $this->on_promotion,
+            'categoria' => $this->category->name ?? null,
+            'unidad' => $this->unit->abbreviation ?? null,
         ];
     }
 }

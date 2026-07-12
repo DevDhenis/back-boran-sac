@@ -15,23 +15,23 @@ class UpdateRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nombre' => [
+            'name' => [
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('roles', 'nombre')->ignore($this->route('role')->id),
+                Rule::unique('roles', 'name')->ignore($this->route('role')->id),
             ],
-            'descripcion' => 'nullable|string|max:255',
+            'description' => 'nullable|string|max:255',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'nombre.required' => 'El nombre del rol es obligatorio.',
-            'nombre.unique' => 'El nombre del rol ya existe.',
-            'nombre.max' => 'El nombre no debe superar 255 caracteres.',
-            'descripcion.max' => 'La descripción no debe superar 255 caracteres.',
+            'name.required' => 'El name del rol es obligatorio.',
+            'name.unique' => 'El name del rol ya existe.',
+            'name.max' => 'El name no debe superar 255 caracteres.',
+            'description.max' => 'La descripción no debe superar 255 caracteres.',
         ];
     }
 }

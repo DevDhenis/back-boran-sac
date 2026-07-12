@@ -14,12 +14,12 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nombres' => 'required|string|max:255',
-            'apellido_paterno' => 'nullable|string|max:255',
-            'apellido_materno' => 'nullable|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'nullable|string|max:255',
+            'second_last_name' => 'nullable|string|max:255',
             'username' => 'required|string|unique:users,username',
             'email' => 'required|string|email|max:255|unique:users,email',
-            'password' => 'required|string|min:6|confirmed'
+            'password' => 'required|string|min:6|confirmed',
         ];
     }
 
@@ -39,10 +39,10 @@ class RegisterRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'nombres' => 'nombres',
-            'apellido_paterno' => 'apellido paterno',
-            'apellido_materno' => 'apellido materno',
-            'username' => 'nombre de usuario',
+            'first_name' => 'nombres',
+            'last_name' => 'apellido paterno',
+            'second_last_name' => 'apellido materno',
+            'username' => 'name de usuario',
             'email' => 'correo electrónico',
             'password' => 'contraseña',
         ];

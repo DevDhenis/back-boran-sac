@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ShoppingCart\UpdateCartItemRequest;
 use App\Models\Product;
 use App\Models\ShoppingCart;
 use App\Models\ShoppingCartItem;
-use Illuminate\Support\Facades\DB;
-use App\Http\Requests\ShoppingCart\UpdateCartItemRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ShoppingCartItemController extends Controller
 {
@@ -35,31 +35,31 @@ class ShoppingCartItemController extends Controller
             if ($item) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Este producto ya está en tu carrito.'
+                    'message' => 'Este producto ya está en tu carrito.',
                 ], 409);
             }
 
             if ($product->stock < 1) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Stock insuficiente'
+                    'message' => 'Stock insuficiente',
                 ], 422);
             }
 
             ShoppingCartItem::create([
                 'shopping_cart_id' => $cart->id,
                 'product_id' => $product->id,
-                'cantidad' => 1,
-                'descuento' => $product->descuento,
-                'precio_unitario' => $product->pre_uni,
-                'subtotal' => $product->pre_fin,
+                'quantity' => 1,
+                'discount' => $product->discount,
+                'unit_price' => $product->unit_price,
+                'subtotal' => $product->final_price,
             ]);
 
             $cart->recalculateTotal();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Producto agregado al carrito.'
+                'message' => 'Producto agregado al carrito.',
             ], 201);
         });
     }
@@ -81,12 +81,12 @@ class ShoppingCartItemController extends Controller
 
             $product = Product::lockForUpdate()->findOrFail($item->product_id);
 
-            if ($request->cantidad > $product->stock) {
+            if ($request->quantity > $product->stock) {
                 return response()->json(['message' => 'Stock insuficiente'], 422);
             }
 
-            $item->cantidad = $request->cantidad;
-            $item->subtotal = $item->cantidad * $item->precio_final;
+            $item->quantity = $request->quantity;
+            $item->subtotal = $item->quantity * $item->final_price;
             $item->save();
 
             $cart->recalculateTotal();

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Sales\StoreSalesItemRequest;
 use App\Models\SalesItem;
 use Illuminate\Http\Request;
-use App\Http\Requests\Sales\StoreSalesItemRequest;
 
 class SalesItemController extends Controller
 {
@@ -16,6 +16,7 @@ class SalesItemController extends Controller
     public function store(StoreSalesItemRequest $request)
     {
         $item = SalesItem::create($request->validated());
+
         return response()->json($item, 201);
     }
 
@@ -28,12 +29,14 @@ class SalesItemController extends Controller
     {
         $item = SalesItem::findOrFail($id);
         $item->update($request->only(['quantity', 'price', 'discount']));
+
         return response()->json($item);
     }
 
     public function destroy($id)
     {
         SalesItem::findOrFail($id)->delete();
+
         return response()->json(['message' => 'Item eliminado']);
     }
 }

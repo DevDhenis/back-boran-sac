@@ -10,28 +10,29 @@ class Product extends Model
     use HasFactory;
 
     protected $table = 'products';
+
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'codigo_interno',
-        'nombre',
-        'descripcion',
+        'internal_code',
+        'name',
+        'description',
         'stock',
-        'cantidad_minima',
-        'en_promocion',
-        'pre_uni',
-        'pre_uni_may',
-        'can_min_may',
-        'descuento',
-        'imagen',
+        'minimum_quantity',
+        'on_promotion',
+        'unit_price',
+        'wholesale_unit_price',
+        'wholesale_min_quantity',
+        'discount',
+        'image',
         'unit_id',
         'product_category_id',
-        'estado_registro',
-        'pre_fin',
+        'status',
+        'final_price',
     ];
 
     protected $casts = [
-        'en_promocion' => 'boolean',
+        'on_promotion' => 'boolean',
     ];
 
     public function unit()
@@ -43,18 +44,21 @@ class Product extends Model
     {
         return $this->belongsTo(ProductCategory::class, 'product_category_id');
     }
+
     public function getPrecioAttribute()
     {
-        return $this->attributes['pre_uni'] ?? null;
+        return $this->attributes['unit_price'] ?? null;
     }
 
     public function getPreFinAttribute()
     {
-        if (!is_null($this->attributes['descuento']) && $this->attributes['descuento'] > 0) {
-            $descuentoDecimal = $this->attributes['descuento'] / 100;
-            $precioConDescuento = $this->attributes['pre_uni'] * (1 - $descuentoDecimal);
+        if (! is_null($this->attributes['discount']) && $this->attributes['discount'] > 0) {
+            $descuentoDecimal = $this->attributes['discount'] / 100;
+            $precioConDescuento = $this->attributes['unit_price'] * (1 - $descuentoDecimal);
+
             return round($precioConDescuento, 2);
         }
-        return $this->attributes['pre_uni'];
+
+        return $this->attributes['unit_price'];
     }
 }

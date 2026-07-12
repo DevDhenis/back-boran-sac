@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('password');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('codigo_verificacion')->nullable();
-            $table->string('codigo_recuperacion')->nullable();
-            $table->char('estado_registro', 1)->default('A');
+            $table->string('verification_code')->nullable();
+            $table->string('recovery_code')->nullable();
+            $table->char('status', 1)->default('A');
             $table->foreignId('role_id')->constrained('roles');
             $table->foreignId('person_id')->constrained('persons');
             $table->timestamps();

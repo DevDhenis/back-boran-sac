@@ -1,13 +1,13 @@
 <x-mail::message>
 # Verifica tu dirección de correo electrónico
 
-¡Hola **{{ $persona->nombres }}** 🌟
+¡Hola **{{ $person->first_name }}** 🌟
 
 📬 Acabamos de enviarte un código de verificación para asegurarnos de que esta dirección de correo electrónico realmente te pertenece.  
 Por favor, ingresa el siguiente código en nuestra página de verificación:
 
 <x-mail::panel>
-🔑 <span style="font-size: 20px; color: black;">{{ $codigo }}</span>
+🔑 <span style="font-size: 20px; color: black;">{{ $code }}</span>
 </x-mail::panel>
 
 Estamos emocionados de tenerte en **FERREMAX S.A.C**.  

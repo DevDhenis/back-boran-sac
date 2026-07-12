@@ -10,10 +10,10 @@ class ClientFactory extends Factory
     {
         return [
             'person_id' => \App\Models\Person::factory(),
-            'cantidad_compras' => $this->faker->numberBetween(0, 50),
-            'cantidad_compras_aceptadas' => $this->faker->numberBetween(0, 50),
-            'cantidad_compras_rechazadas' => $this->faker->numberBetween(0, 10),
-            'cantidad_compras_devueltas' => $this->faker->numberBetween(0, 5),
+            'total_purchases' => $this->faker->numberBetween(0, 50),
+            'accepted_purchases' => $this->faker->numberBetween(0, 50),
+            'rejected_purchases' => $this->faker->numberBetween(0, 10),
+            'returned_purchases' => $this->faker->numberBetween(0, 5),
         ];
     }
 }

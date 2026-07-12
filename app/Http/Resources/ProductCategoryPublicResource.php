@@ -10,8 +10,8 @@ class ProductCategoryPublicResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'nombre' => $this->nombre,
-            'descripcion' => $this->descripcion,
+            'name' => $this->name,
+            'description' => $this->description,
         ];
     }
 }

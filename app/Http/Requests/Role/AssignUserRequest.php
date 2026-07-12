@@ -15,9 +15,9 @@ class AssignUserRequest extends FormRequest
     {
         return [
             'employee_id' => 'required|exists:employees,id',
-            'username'    => 'required|string|unique:users,username',
-            'email'       => 'required|email|unique:users,email',
-            'password'    => 'required|string|min:6',
+            'username' => 'required|string|unique:users,username',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6',
         ];
     }
 
@@ -25,9 +25,9 @@ class AssignUserRequest extends FormRequest
     {
         return [
             'employee_id' => 'empleado',
-            'username'    => 'usuario',
-            'email'       => 'correo',
-            'password'    => 'contraseña',
+            'username' => 'usuario',
+            'email' => 'correo',
+            'password' => 'contraseña',
         ];
     }
 }

@@ -14,7 +14,7 @@ class UpdateSaleRequest extends FormRequest
     public function rules()
     {
         return [
-            'status' => 'required|in:pendiente,confirmada,anulada',
+            'status' => 'required|in:pending,confirmed,cancelled',
         ];
     }
 }

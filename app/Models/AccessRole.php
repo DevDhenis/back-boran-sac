@@ -10,6 +10,7 @@ class AccessRole extends Model
     use HasFactory;
 
     protected $table = 'access_roles';
+
     protected $primaryKey = 'id';
 
     protected $fillable = [
