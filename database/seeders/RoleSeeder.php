@@ -10,19 +10,29 @@ class RoleSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('roles')->upsert([
+        // updateOrInsert (idempotente y compatible con MySQL/MariaDB y sqlite).
+        // No usamos upsert() porque roles.nombre no tiene índice UNIQUE, y sin él
+        // upsert falla en sqlite y duplica filas en MySQL al re-ejecutar.
+        $roles = [
             [
                 'nombre'      => 'Administrador General',
                 'descripcion' => 'Acceso total a todos los módulos del sistema',
-                'created_at'  => Carbon::now(),
-                'updated_at'  => Carbon::now(),
             ],
             [
                 'nombre'      => 'Cliente',
                 'descripcion' => 'Acceso público a la tienda',
-                'created_at'  => Carbon::now(),
-                'updated_at'  => Carbon::now(),
             ],
-        ], ['nombre'], ['descripcion', 'updated_at']);
+        ];
+
+        foreach ($roles as $role) {
+            DB::table('roles')->updateOrInsert(
+                ['nombre' => $role['nombre']],
+                [
+                    'descripcion' => $role['descripcion'],
+                    'created_at'  => Carbon::now(),
+                    'updated_at'  => Carbon::now(),
+                ]
+            );
+        }
     }
 }
