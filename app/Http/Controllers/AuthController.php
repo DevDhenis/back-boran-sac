@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\ResendCodeRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\VerifyEmailRequest;
 use App\Http\Requests\Auth\VerifyRecoveryCodeRequest;
@@ -35,6 +36,15 @@ class AuthController extends Controller
         }
 
         $user = Auth::user();
+
+        // Bloquea el acceso hasta que el correo esté verificado.
+        if (is_null($user->email_verified_at)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Debes verificar tu correo antes de iniciar sesión.',
+                'requires_verification' => true,
+            ], 403);
+        }
 
         $role = $user->role()->with('accesses')->first();
 
@@ -76,14 +86,14 @@ class AuthController extends Controller
             'returned_purchases' => 0,
         ]);
 
-        $token = JWTAuth::fromUser($user);
-
         Mail::to($user->email)->send(new VerificationCodeMail($code, $person));
 
+        // No se devuelve token: el usuario debe verificar su correo antes de
+        // poder iniciar sesión. El front va directo a la pantalla de verificación.
         return response()->json([
             'success' => true,
-            'message' => 'Usuario registrado con éxito',
-            'token' => $token,
+            'message' => 'Usuario registrado. Te enviamos un código de verificación a tu correo.',
+            'requires_verification' => true,
         ], 201);
     }
 
@@ -119,6 +129,28 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'Correo verificado correctamente',
             'data' => new PersonResource($user->person),
+        ]);
+    }
+
+    public function resendCode(ResendCodeRequest $request): JsonResponse
+    {
+        $user = User::where('email', $request->email)->first();
+
+        if (! is_null($user->email_verified_at)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'El correo ya está verificado.',
+            ], 409);
+        }
+
+        $code = strtoupper(Str::random(8));
+        $user->update(['verification_code' => $code]);
+
+        Mail::to($user->email)->send(new VerificationCodeMail($code, $user->person));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Código de verificación reenviado a tu correo.',
         ]);
     }
 

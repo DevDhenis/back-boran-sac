@@ -17,6 +17,7 @@ class RegisterRequest extends FormRequest
             'first_name' => 'required|string|max:255',
             'last_name' => 'nullable|string|max:255',
             'second_last_name' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:255',
             'username' => 'required|string|unique:users,username',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
@@ -42,7 +43,8 @@ class RegisterRequest extends FormRequest
             'first_name' => 'nombres',
             'last_name' => 'apellido paterno',
             'second_last_name' => 'apellido materno',
-            'username' => 'name de usuario',
+            'address' => 'dirección',
+            'username' => 'nombre de usuario',
             'email' => 'correo electrónico',
             'password' => 'contraseña',
         ];

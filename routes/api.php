@@ -26,14 +26,14 @@ Route::prefix('auth')->group(function () {
     Route::get('me', [AuthController::class, 'me']);
     Route::post('login', [AuthController::class, 'login']);
     Route::post('register', [AuthController::class, 'register']);
+    Route::post('verify-email', [AuthController::class, 'verifyEmail']);
+    Route::post('resend-code', [AuthController::class, 'resendCode']);
     Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('reset-password', [AuthController::class, 'resetPassword']);
     Route::post('verify-recovery-code', [AuthController::class, 'verifyRecoveryCode']);
 });
 
 Route::middleware('jwt')->group(function () {
-
-    Route::post('auth/verify-email', [AuthController::class, 'verifyEmail']);
 
     // Perfil del usuario autenticado (self-service de datos personales)
     Route::get('profile', [ProfileController::class, 'show']);

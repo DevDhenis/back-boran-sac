@@ -53,6 +53,7 @@ php artisan migrate:fresh --seed   # recrear BD + seeders (resetea datos)
     - **`jwt`** (`JwtMiddleware`) — valida el token; devuelve 401 con `{success:false, message}` si es inválido/expirado/ausente.
     - **`access:<slug>`** (`CheckAccess`) — autorización por permiso. Compara (case-insensitive) `<slug>` contra `auth()->user()->role->accesses[].name`. Ej: `access:ventas`.
 - El modelo de permisos es: `User → role_id → Role → (pivot access_roles) → Access`. Para dar/quitar permisos se sincroniza la pivote vía `RoleController@syncAccesses`.
+- **Verificación de correo obligatoria para login**: `login` bloquea a usuarios con `email_verified_at` null y responde **403** `{ success:false, requires_verification:true }` (no entrega token). `register` **no devuelve token** (el usuario debe verificar primero). `auth/verify-email` y `auth/resend-code` son **públicos** (validan por email+código, sin JWT). El código de verificación vive en `users.verification_code`; el de recuperación en `users.recovery_code`.
 
 ### Modelo de dominio — `Person` es el eje
 
