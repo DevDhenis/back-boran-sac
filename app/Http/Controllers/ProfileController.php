@@ -39,8 +39,8 @@ class ProfileController extends Controller
             $user->load('person');
 
             if ($request->hasFile('image')) {
-                // Guarda la image según el driver (local en dev, Cloudinary en prod).
-                $data['image'] = ImageUploader::upload($request->file('image'), 'users');
+                // Avatar: optimized + WebP, capped at 512px (local in dev, Cloudinary in prod).
+                $data['image'] = ImageUploader::upload($request->file('image'), 'users', 512);
             }
 
             $personData = collect($data)->only([

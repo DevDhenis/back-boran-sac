@@ -7,6 +7,10 @@ use App\Models\Person;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Drivers\Gd\Driver as GdDriver;
+use Intervention\Image\ImageManager;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -138,5 +142,30 @@ class ProfileTest extends Testcase
         $names = collect($response->json('data'))->pluck('name');
         $this->assertTrue($names->contains('RUC'));
         $this->assertFalse($names->contains('Carnet'));
+    }
+
+    public function test_uploaded_avatar_is_optimized_to_webp_and_downscaled(): void
+    {
+        Storage::fake('public');
+        [$user, $person, $token] = $this->authUser();
+
+        // Large source image (2000x2000 jpg) -> must be capped at 512 and stored as webp.
+        $file = UploadedFile::fake()->image('avatar.jpg', 2000, 2000);
+
+        // Multipart (not JSON) so the fake file actually travels in the request.
+        $this->withToken($token)
+            ->post('/api/profile/update', ['image' => $file], ['Accept' => 'application/json'])
+            ->assertOk();
+
+        $storedPath = $person->fresh()->image;
+
+        $this->assertStringEndsWith('.webp', $storedPath);
+        Storage::disk('public')->assertExists($storedPath);
+
+        // Re-read the stored file: longest side must be <= 512 (downscaled, aspect kept).
+        $bytes = Storage::disk('public')->get($storedPath);
+        $image = ImageManager::usingDriver(GdDriver::class)->decodeBinary($bytes);
+        $this->assertLessThanOrEqual(512, $image->width());
+        $this->assertLessThanOrEqual(512, $image->height());
     }
 }

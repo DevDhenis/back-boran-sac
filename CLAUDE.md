@@ -75,6 +75,7 @@ Al agregar/editar endpoints, mantener exactamente esta envoltura.
 - **Validación**: FormRequests en `app/Http/Requests/<Dominio>/` (ej. `Sales/`, `Employee/`, `Auth/`). Un endpoint que valida input debe tener su FormRequest, no validar suelto (salvo casos puntuales como `SaleController@changeStatus`).
 - **Serialización**: API Resources en `app/Http/Resources/` (`SaleResource`, `ProductResource`, etc.). Los controladores devuelven Resources, no modelos crudos, y hacen eager-load explícito de relaciones (`->with([...])`) para evitar N+1.
 - **Endpoints públicos** (sin auth) viven en `app/Http/Controllers/Public/`.
+- **Imágenes**: toda subida pasa por `App\Support\ImageUploader::upload($file, $folder, $maxSize?, $quality?)`, que **optimiza y convierte a WebP** en ambos drivers (local con Intervention/GD, Cloudinary con transformación entrante). Guarda `<folder>/<uuid>.webp` (local) o devuelve la URL segura (Cloudinary). Defaults en `config/images.php` (`max_size=1024`, `quality=80`); los avatares de perfil usan `512`. No agregar otra capa de optimización.
 - `routes/api.php` es la fuente de verdad de qué está expuesto: hay controllers en el repo que aún no están enruteados.
 
 ### Convenciones de datos
