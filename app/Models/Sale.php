@@ -22,6 +22,11 @@ class Sale extends Model
         'shipping_address',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Client::class, 'customer_id');

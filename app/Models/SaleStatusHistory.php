@@ -15,6 +15,10 @@ class SaleStatusHistory extends Model
         'reason',
     ];
 
+    protected $hidden = [
+        'updated_at',
+    ];
+
     public function sale()
     {
         return $this->belongsTo(Sale::class);

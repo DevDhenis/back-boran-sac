@@ -18,6 +18,11 @@ class ShoppingCartItem extends Model
         'subtotal',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
     protected $casts = [
         'quantity' => 'decimal:2',
         'unit_price' => 'decimal:2',

@@ -23,6 +23,11 @@ class InventoryManagement extends Model
         'status',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
     protected $casts = [
         'quantity' => 'decimal:3',
         'stock_before' => 'decimal:3',
