@@ -7,8 +7,8 @@ use App\Http\Requests\Product\UpdateRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\InventoryManagement;
+use App\Support\ImageUploader;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -30,7 +30,8 @@ class ProductController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('imagen')) {
-            $data['imagen'] = $request->file('imagen')->store('products', 'public');
+            // Guarda la imagen según el driver (local en dev, Cloudinary en prod).
+            $data['imagen'] = ImageUploader::upload($request->file('imagen'), 'products');
         }
 
         Product::create($data);
@@ -55,11 +56,8 @@ class ProductController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('imagen')) {
-            if ($product->imagen && Storage::disk('public')->exists($product->imagen)) {
-                Storage::disk('public')->delete($product->imagen);
-            }
-
-            $data['imagen'] = $request->file('imagen')->store('products', 'public');
+            // Reemplaza la imagen (local en dev, Cloudinary en prod).
+            $data['imagen'] = ImageUploader::upload($request->file('imagen'), 'products');
         }
 
         $product->update($data);

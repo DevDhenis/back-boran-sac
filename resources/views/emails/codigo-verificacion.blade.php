@@ -10,9 +10,9 @@ Por favor, ingresa el siguiente código en nuestra página de verificación:
 🔑 <span style="font-size: 20px; color: black;">{{ $codigo }}</span>
 </x-mail::panel>
 
-Estamos emocionados de tenerte en **BORAN S.A.C**.  
+Estamos emocionados de tenerte en **FERREMAX S.A.C**.  
 ¡Gracias por ser parte de nuestra comunidad!
 
 Atentamente,  
-🚀 **Equipo BORAN S.A.C**
+🚀 **Equipo FERREMAX S.A.C**
 </x-mail::message>
