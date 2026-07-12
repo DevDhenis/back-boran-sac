@@ -12,6 +12,14 @@ use App\Http\Controllers\ShoppingCartController;
 use App\Http\Controllers\ShoppingCartItemController;
 use App\Http\Controllers\SaleController;
 
+// Healthcheck público (sin auth): sirve para verificar que el backend responde en Render.
+Route::get('/health', function () {
+    return response()->json([
+        'status'  => 'ok',
+        'message' => 'Backend Laravel funcionando',
+    ]);
+});
+
 Route::prefix('auth')->group(function () {
     Route::get('me', [AuthController::class, 'me']);
     Route::post('login', [AuthController::class, 'login']);
