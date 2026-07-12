@@ -10,10 +10,10 @@ class ClientResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'cantidad_compras' => $this->cantidad_compras,
-            'cantidad_compras_aceptadas' => $this->cantidad_compras_aceptadas,
-            'cantidad_compras_rechazadas' => $this->cantidad_compras_rechazadas,
-            'cantidad_compras_devueltas' => $this->cantidad_compras_devueltas,
+            'total_purchases' => $this->total_purchases,
+            'accepted_purchases' => $this->accepted_purchases,
+            'rejected_purchases' => $this->rejected_purchases,
+            'returned_purchases' => $this->returned_purchases,
             'person' => new PersonResource($this->whenLoaded('person')),
         ];
     }

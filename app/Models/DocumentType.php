@@ -10,17 +10,18 @@ class DocumentType extends Model
     use HasFactory;
 
     protected $table = 'document_types';
+
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'nombre',
-        'estado_registro',
+        'name',
+        'status',
     ];
 
     protected $hidden = [
         'created_at',
         'updated_at',
-        'estado_registro',
+        'status',
     ];
 
     public function persons()

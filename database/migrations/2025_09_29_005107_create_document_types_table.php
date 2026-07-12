@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('document_types', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre')->unique();
-            $table->char('estado_registro', 1)->default('A');
+            $table->string('name')->unique();
+            $table->char('status', 1)->default('A');
             $table->timestamps();
         });
     }

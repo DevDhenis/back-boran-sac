@@ -11,17 +11,17 @@ class CheckAccess
     {
         $user = auth()->user();
 
-        if (!$user || !$user->role) {
+        if (! $user || ! $user->role) {
             return ApiResponse::forbidden();
         }
 
         $hasAccess = $user->role
             ->accesses
-            ->pluck('nombre')
-            ->map(fn($n) => strtolower($n))
+            ->pluck('name')
+            ->map(fn ($n) => strtolower($n))
             ->contains(strtolower($requiredAccess));
 
-        if (!$hasAccess) {
+        if (! $hasAccess) {
             return ApiResponse::forbidden();
         }
 

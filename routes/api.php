@@ -1,21 +1,23 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AccessController;
-use App\Http\Controllers\RoleController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DocumentTypeController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProductCategoryController;
-use App\Http\Controllers\UnitController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SaleController;
 use App\Http\Controllers\ShoppingCartController;
 use App\Http\Controllers\ShoppingCartItemController;
-use App\Http\Controllers\SaleController;
+use App\Http\Controllers\UnitController;
+use Illuminate\Support\Facades\Route;
 
 // Healthcheck público (sin auth): sirve para verificar que el backend responde en Render.
 Route::get('/health', function () {
     return response()->json([
-        'status'  => 'ok',
+        'status' => 'ok',
         'message' => 'Backend Laravel funcionando',
     ]);
 });
@@ -32,6 +34,13 @@ Route::prefix('auth')->group(function () {
 Route::middleware('jwt')->group(function () {
 
     Route::post('auth/verify-email', [AuthController::class, 'verifyEmail']);
+
+    // Perfil del usuario autenticado (self-service de datos personales)
+    Route::get('profile', [ProfileController::class, 'show']);
+    Route::post('profile/update', [ProfileController::class, 'update']);
+
+    // Catálogos para selects de formularios
+    Route::get('document-types', [DocumentTypeController::class, 'index']);
 
     Route::get('roles/{role}/accesses', [RoleController::class, 'getAccesses']);
     Route::post('roles/{role}/accesses', [RoleController::class, 'syncAccesses']);

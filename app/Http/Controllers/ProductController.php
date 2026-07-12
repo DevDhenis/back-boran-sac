@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Product\StoreRequest;
 use App\Http\Requests\Product\UpdateRequest;
 use App\Http\Resources\ProductResource;
-use App\Models\Product;
 use App\Models\InventoryManagement;
+use App\Models\Product;
 use App\Support\ImageUploader;
 use Illuminate\Http\JsonResponse;
 
@@ -29,9 +29,9 @@ class ProductController extends Controller
     {
         $data = $request->validated();
 
-        if ($request->hasFile('imagen')) {
-            // Guarda la imagen según el driver (local en dev, Cloudinary en prod).
-            $data['imagen'] = ImageUploader::upload($request->file('imagen'), 'products');
+        if ($request->hasFile('image')) {
+            // Guarda la image según el driver (local en dev, Cloudinary en prod).
+            $data['image'] = ImageUploader::upload($request->file('image'), 'products');
         }
 
         Product::create($data);
@@ -55,9 +55,9 @@ class ProductController extends Controller
     {
         $data = $request->validated();
 
-        if ($request->hasFile('imagen')) {
-            // Reemplaza la imagen (local en dev, Cloudinary en prod).
-            $data['imagen'] = ImageUploader::upload($request->file('imagen'), 'products');
+        if ($request->hasFile('image')) {
+            // Reemplaza la image (local en dev, Cloudinary en prod).
+            $data['image'] = ImageUploader::upload($request->file('image'), 'products');
         }
 
         $product->update($data);
@@ -81,7 +81,7 @@ class ProductController extends Controller
     public function stockHistory(Product $product): JsonResponse
     {
         $movimientos = InventoryManagement::where('product_id', $product->id)
-            ->orderByDesc('fecha_movimiento')
+            ->orderByDesc('movement_date')
             ->with(['employee']) // si quieres incluir el empleado responsable
             ->get();
 

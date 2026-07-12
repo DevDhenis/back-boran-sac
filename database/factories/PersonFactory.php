@@ -12,12 +12,12 @@ class PersonFactory extends Factory
     public function definition(): array
     {
         return [
-            'nombres' => $this->faker->firstName,
-            'apellido_paterno' => $this->faker->lastName,
-            'apellido_materno' => $this->faker->lastName,
-            'direccion' => $this->faker->address,
-            'imagen' => null,
-            'numero_documento' => $this->faker->unique()->numerify('########'),
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+            'second_last_name' => $this->faker->lastName,
+            'address' => $this->faker->address,
+            'image' => null,
+            'document_number' => $this->faker->unique()->numerify('########'),
             'document_type_id' => 1, // Asegúrate de tener un tipo de documento con ID 1
         ];
     }

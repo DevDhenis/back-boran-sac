@@ -7,11 +7,9 @@ use App\Http\Requests\Role\StoreRoleRequest;
 use App\Http\Requests\Role\SyncAccessRequest;
 use App\Http\Requests\Role\UpdateRoleRequest;
 use App\Http\Resources\PersonResource;
-use App\Models\Access;
 use App\Models\Employee;
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -35,11 +33,11 @@ class RoleController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Rol creado con éxito.',
-            'data'    => [
-                'id'          => $role->id,
-                'nombre'      => $role->nombre,
-                'descripcion' => $role->descripcion,
-            ]
+            'data' => [
+                'id' => $role->id,
+                'name' => $role->name,
+                'description' => $role->description,
+            ],
         ], 201);
     }
 
@@ -119,17 +117,17 @@ class RoleController extends Controller
         }
 
         $user = User::create([
-            'username'   => $request->username,
-            'email'      => $request->email,
-            'password'   => Hash::make($request->password),
-            'role_id'    => $role->id,
-            'person_id'  => $personId,
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role_id' => $role->id,
+            'person_id' => $personId,
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Usuario creado y asignado al rol correctamente.',
-            'data'    => $user,
+            'data' => $user,
         ], 201);
     }
 
@@ -140,13 +138,13 @@ class RoleController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Usuarios vinculados al rol obtenidos correctamente.',
-            'data'    => $users->map(function ($user) {
+            'data' => $users->map(function ($user) {
                 return [
-                    'id'       => $user->id,
+                    'id' => $user->id,
                     'username' => $user->username,
-                    'email'    => $user->email,
-                    'role_id'  => $user->role_id,
-                    'person'   => new PersonResource($user->person),
+                    'email' => $user->email,
+                    'role_id' => $user->role_id,
+                    'person' => new PersonResource($user->person),
                 ];
             }),
         ]);

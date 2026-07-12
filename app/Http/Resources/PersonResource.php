@@ -15,33 +15,33 @@ class PersonResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'nombres' => $this->nombres,
-            'apellido_paterno' => $this->apellido_paterno,
-            'apellido_materno' => $this->apellido_materno,
-            'direccion' => $this->direccion,
-            'imagen' => $this->resolveImagenUrl(),
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'second_last_name' => $this->second_last_name,
+            'address' => $this->address,
+            'image' => $this->resolveImagenUrl(),
 
-            'numero_documento' => $this->numero_documento,
+            'document_number' => $this->document_number,
             'document_type_id' => $this->whenLoaded('documentType'),
         ];
     }
 
     /**
-     * Resuelve la URL de la imagen:
-     * - sin imagen o "user-default" -> avatar por defecto
+     * Resuelve la URL de la image:
+     * - sin image o "user-default" -> avatar por defecto
      * - URL completa (p. ej. Cloudinary) -> se devuelve tal cual
      * - ruta local heredada -> se sirve desde storage
      */
     protected function resolveImagenUrl(): string
     {
-        if (!$this->imagen || str_contains($this->imagen, 'user-default')) {
+        if (! $this->image || str_contains($this->image, 'user-default')) {
             return asset('images/user-default.jpg');
         }
 
-        if (filter_var($this->imagen, FILTER_VALIDATE_URL)) {
-            return $this->imagen;
+        if (filter_var($this->image, FILTER_VALIDATE_URL)) {
+            return $this->image;
         }
 
-        return asset('storage/' . $this->imagen);
+        return asset('storage/'.$this->image);
     }
 }

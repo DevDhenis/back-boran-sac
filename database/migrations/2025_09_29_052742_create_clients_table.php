@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
             $table->foreignId('person_id')->constrained('persons');
-            $table->integer('cantidad_compras');
-            $table->integer('cantidad_compras_aceptadas');
-            $table->integer('cantidad_compras_rechazadas');
-            $table->integer('cantidad_compras_devueltas');
+            $table->integer('total_purchases');
+            $table->integer('accepted_purchases');
+            $table->integer('rejected_purchases');
+            $table->integer('returned_purchases');
             $table->timestamps();
         });
     }

@@ -16,10 +16,10 @@ class PurchaseListResource extends JsonResource
             'total' => $this->total,
             'status' => $this->status,
             'client' => $person
-                ? trim(($person->nombres ?? '') . ' ' . ($person->apellido_paterno ?? ''))
+                ? trim(($person->first_name ?? '').' '.($person->last_name ?? ''))
                 : null,
             'payment_methods' => $this->payments->pluck('method')->unique()->values(),
-            'employee' => $this->employee?->person?->nombres ?? null,
+            'employee' => $this->employee?->person?->first_name ?? null,
         ];
     }
 }

@@ -15,7 +15,7 @@ class StoreCartItemRequest extends FormRequest
     {
         return [
             'product_id' => 'required|exists:products,id',
-            'cantidad' => 'required|numeric|min:0.01'
+            'quantity' => 'required|numeric|min:0.01',
         ];
     }
 }

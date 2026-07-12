@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('contact_types', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
+            $table->string('name');
             $table->string('regex');
             $table->string('icon');
             $table->timestamps();

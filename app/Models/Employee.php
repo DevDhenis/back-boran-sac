@@ -10,19 +10,20 @@ class Employee extends Model
     use HasFactory;
 
     protected $table = 'employees';
+
     protected $primaryKey = 'id';
 
     protected $fillable = [
         'person_id',
-        'horario_laboral',
-        'sueldo',
-        'estado_registro',
+        'work_schedule',
+        'salary',
+        'status',
     ];
 
     protected $hidden = [
         'created_at',
         'updated_at',
-        'estado_registro',
+        'status',
     ];
 
     public function person()

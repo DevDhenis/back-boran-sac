@@ -14,15 +14,15 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nombres' => 'required|string|max:255',
-            'apellido_paterno' => 'nullable|string|max:255',
-            'apellido_materno' => 'nullable|string|max:255',
-            'direccion' => 'nullable|string|max:255',
-            'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'numero_documento' => 'nullable|string|unique:persons,numero_documento',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'nullable|string|max:255',
+            'second_last_name' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:255',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'document_number' => 'nullable|string|unique:persons,document_number',
             'document_type_id' => 'nullable|exists:document_types,id',
-            'horario_laboral' => 'required|string|max:255',
-            'sueldo' => 'required|numeric|min:0',
+            'work_schedule' => 'required|string|max:255',
+            'salary' => 'required|numeric|min:0',
         ];
     }
 
@@ -43,15 +43,15 @@ class StoreRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'nombres' => 'nombres',
-            'apellido_paterno' => 'apellido paterno',
-            'apellido_materno' => 'apellido materno',
-            'direccion' => 'dirección',
-            'imagen' => 'imagen',
-            'numero_documento' => 'número de documento',
+            'first_name' => 'nombres',
+            'last_name' => 'apellido paterno',
+            'second_last_name' => 'apellido materno',
+            'address' => 'dirección',
+            'image' => 'imagen',
+            'document_number' => 'número de documento',
             'document_type_id' => 'tipo de documento',
-            'horario_laboral' => 'horario laboral',
-            'sueldo' => 'sueldo',
+            'work_schedule' => 'horario laboral',
+            'salary' => 'sueldo',
         ];
     }
 }

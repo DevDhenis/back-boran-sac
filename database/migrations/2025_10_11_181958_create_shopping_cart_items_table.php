@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('shopping_cart_id')->constrained('shopping_cart')->cascadeOnDelete();
             $table->foreignId('product_id')->constrained('products')->restrictOnDelete();
-            $table->decimal('cantidad', 10, 2)->default(1.00);
-            $table->decimal('precio_unitario', 14, 2);
+            $table->decimal('quantity', 10, 2)->default(1.00);
+            $table->decimal('unit_price', 14, 2);
             $table->decimal('subtotal', 14, 2);
-            $table->decimal('precio_final', 10, 2)->default(0.00);
-            $table->integer('descuento')->default(0);
+            $table->decimal('final_price', 10, 2)->default(0.00);
+            $table->integer('discount')->default(0);
             $table->timestamps();
         });
     }

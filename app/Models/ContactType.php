@@ -10,16 +10,17 @@ class ContactType extends Model
     use HasFactory;
 
     protected $table = 'contact_types';
+
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'nombre',
+        'name',
         'regex',
         'icon',
     ];
 
     public function persons()
     {
-        return $this->belongsToMany(Person::class, 'contact_type_person')->withPivot('valor');
+        return $this->belongsToMany(Person::class, 'contact_type_person')->withPivot('value');
     }
 }

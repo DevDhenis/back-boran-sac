@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,7 @@ class SaleStatusHistory extends Model
         'new_status',
         'changed_by_employee_id',
         'changed_by_client_id',
-        'reason'
+        'reason',
     ];
 
     public function sale()

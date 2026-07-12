@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('customer_id')->constrained('clients');
             $table->foreignId('employee_id')->nullable()->constrained('employees');
             $table->dateTime('sale_date');
-            $table->enum('status', ['pendiente_envio', 'en_preparacion', 'en_camino', 'entregado', 'cancelado']);
-            $table->string('direccion_envio')->nullable();
+            $table->enum('status', ['pending_shipment', 'in_preparation', 'in_transit', 'delivered', 'cancelled']);
+            $table->string('shipping_address')->nullable();
             $table->decimal('subtotal', 10, 2);
             $table->decimal('tax', 10, 2)->default(0);
             $table->decimal('total', 10, 2);

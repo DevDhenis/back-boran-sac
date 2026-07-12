@@ -15,10 +15,10 @@ class StorePaymentRequest extends FormRequest
     {
         return [
             'sale_id' => 'required|exists:sales,id',
-            'method' => 'required|in:efectivo,tarjeta,transferencia',
+            'method' => 'required|in:cash,card,transfer',
             'amount' => 'required|numeric|min:0',
             'payment_date' => 'required|date',
-            'status' => 'required|in:pendiente,confirmado,fallido',
+            'status' => 'required|in:pending,confirmed,failed',
         ];
     }
 }

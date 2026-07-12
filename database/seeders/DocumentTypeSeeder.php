@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\DocumentType;
+use Illuminate\Database\Seeder;
 
 class DocumentTypeSeeder extends Seeder
 {
@@ -19,8 +18,8 @@ class DocumentTypeSeeder extends Seeder
 
         foreach ($types as $name) {
             DocumentType::firstOrCreate(
-                ['nombre' => $name],
-                ['estado_registro' => 'A']
+                ['name' => $name],
+                ['status' => 'A']
             );
         }
     }

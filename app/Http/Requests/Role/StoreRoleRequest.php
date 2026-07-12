@@ -14,18 +14,18 @@ class StoreRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nombre' => 'required|string|max:255|unique:roles,nombre',
-            'descripcion' => 'nullable|string|max:255',
+            'name' => 'required|string|max:255|unique:roles,name',
+            'description' => 'nullable|string|max:255',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'nombre.required' => 'El nombre del rol es obligatorio.',
-            'nombre.unique' => 'El nombre del rol ya existe.',
-            'nombre.max' => 'El nombre no debe superar 255 caracteres.',
-            'descripcion.max' => 'La descripción no debe superar 255 caracteres.',
+            'name.required' => 'El name del rol es obligatorio.',
+            'name.unique' => 'El name del rol ya existe.',
+            'name.max' => 'El name no debe superar 255 caracteres.',
+            'description.max' => 'La descripción no debe superar 255 caracteres.',
         ];
     }
 }

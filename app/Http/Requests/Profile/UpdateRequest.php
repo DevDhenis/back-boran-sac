@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Employee;
+namespace App\Http\Requests\Profile;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -13,7 +13,9 @@ class UpdateRequest extends FormRequest
 
     public function rules(): array
     {
-        $personId = optional($this->employee)->person_id;
+        $user = auth()->user();
+        $personId = optional($user)->person_id;
+        $userId = optional($user)->id;
 
         return [
             'first_name' => 'sometimes|string|max:255',
@@ -23,8 +25,8 @@ class UpdateRequest extends FormRequest
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'document_number' => 'nullable|string|unique:persons,document_number,'.$personId,
             'document_type_id' => 'nullable|exists:document_types,id',
-            'work_schedule' => 'sometimes|string|max:255',
-            'salary' => 'sometimes|numeric|min:0',
+            'username' => 'sometimes|string|max:255|unique:users,username,'.$userId,
+            'email' => 'sometimes|email|max:255|unique:users,email,'.$userId,
         ];
     }
 
@@ -32,12 +34,12 @@ class UpdateRequest extends FormRequest
     {
         return [
             'string' => 'El :attribute debe ser texto.',
+            'email' => 'El :attribute debe ser un correo válido.',
             'max' => 'El :attribute no debe exceder :max caracteres.',
-            'numeric' => 'El :attribute debe ser un número válido.',
-            'min' => 'El :attribute debe ser al menos :min.',
+            'image' => 'El :attribute debe ser una image válida.',
+            'mimes' => 'El :attribute debe ser un archivo de tipo: :values.',
             'unique' => 'El :attribute ya está registrado.',
             'exists' => 'El :attribute seleccionado no existe.',
-            'in' => 'El :attribute debe ser uno de los valores permitidos.',
         ];
     }
 
@@ -51,8 +53,8 @@ class UpdateRequest extends FormRequest
             'image' => 'imagen',
             'document_number' => 'número de documento',
             'document_type_id' => 'tipo de documento',
-            'work_schedule' => 'horario laboral',
-            'salary' => 'sueldo',
+            'username' => 'name de usuario',
+            'email' => 'correo electrónico',
         ];
     }
 }

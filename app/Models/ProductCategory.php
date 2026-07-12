@@ -10,11 +10,12 @@ class ProductCategory extends Model
     use HasFactory;
 
     protected $table = 'product_categories';
+
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'nombre',
-        'descripcion',
+        'name',
+        'description',
     ];
 
     public function products()
