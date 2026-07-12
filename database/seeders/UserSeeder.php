@@ -53,26 +53,5 @@ class UserSeeder extends Seeder
                 'created_at' => now(),
             ]
         );
-
-        // 👤 Cliente 2
-        $clientPerson2 = DB::table('persons')->where('document_number', '77777777')->first();
-        if (! $clientPerson2) {
-            throw new RuntimeException('Persona cliente 2 no encontrada');
-        }
-
-        DB::table('users')->updateOrInsert(
-            ['username' => 'cliente2'],
-            [
-                'password' => Hash::make('cliente2'),
-                'email' => 'cliente2@example.com',
-                'email_verified_at' => now()->toDateTimeString(),
-                'verification_code' => Str::upper(Str::random(8)),
-                'status' => 'A',
-                'role_id' => 2, // cliente
-                'person_id' => $clientPerson2->id,
-                'updated_at' => now(),
-                'created_at' => now(),
-            ]
-        );
     }
 }

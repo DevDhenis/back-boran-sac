@@ -40,20 +40,5 @@ class PersonSeeder extends Seeder
                 'created_at' => now(),
             ]
         );
-
-        // 👤 Persona cliente 2
-        DB::table('persons')->updateOrInsert(
-            ['document_number' => '77777777'],
-            [
-                'first_name' => 'Cliente',
-                'last_name' => 'Demo2',
-                'second_last_name' => 'Usuario2',
-                'address' => 'Av. Secundaria 456',
-                'image' => $avatarPath,
-                'document_type_id' => 1,
-                'updated_at' => now(),
-                'created_at' => now(),
-            ]
-        );
     }
 }

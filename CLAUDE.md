@@ -109,4 +109,4 @@ php artisan db:seed --force                 # todo el DatabaseSeeder
 # o para uno solo:  php artisan db:seed --class=ProductCategorySeeder --force
 ```
 
-(Los valores reales viven en el panel de Render/Aiven; nunca se commitean.) `DatabaseSeeder` siembra **solo datos base** (tipos de documento, roles, admin, cliente de prueba, accesos, unidades, categorías); productos/ventas/inventario/empleados NO se siembran (se cargan desde la app).
+(Los valores reales viven en el panel de Render/Aiven; nunca se commitean.) `DatabaseSeeder` siembra **datos base + exactamente 2 cuentas completas**: `admin` (rol Administrador General, con faceta `Employee`) y `cliente` (rol Cliente, con faceta `Client`), más tipos de documento, roles, accesos, unidades y categorías. Productos/ventas/inventario NO se siembran (se cargan desde la app). Nota: `auth()->user()->employee` y `->client` resuelven la faceta vía `hasOne(..., 'person_id', 'person_id')` en el modelo `User`.
