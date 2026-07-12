@@ -13,5 +13,5 @@ Por favor, utiliza el siguiente código para completar el proceso:
 **Importante:** Si no solicitaste este cambio, puedes ignorar este correo. Por seguridad, tu contraseña no será modificada sin este código.
 
 Atentamente,
-🚀 **Equipo BORAN S.A.C**
+🚀 **Equipo FERREMAX S.A.C**
 </x-mail::message>

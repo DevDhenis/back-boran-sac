@@ -17,7 +17,6 @@ php artisan test tests/Feature/ExampleTest.php   # un archivo
 ./vendor/bin/pint     # formateo/lint (Laravel Pint)
 php artisan migrate           # correr migraciones
 php artisan migrate:fresh --seed   # recrear BD + seeders (resetea datos)
-php artisan l5-swagger:generate    # regenerar docs OpenAPI/Swagger
 ```
 
 - BD por defecto en `.env.example`: **sqlite**. Los tests corren sobre sqlite `:memory:` (ver `phpunit.xml`).
