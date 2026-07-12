@@ -7,9 +7,9 @@ use App\Http\Requests\Employee\UpdateRequest;
 use App\Http\Resources\EmployeeResource;
 use App\Models\Employee;
 use App\Models\Person;
+use App\Support\ImageUploader;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class EmployeeController extends Controller
@@ -32,9 +32,8 @@ class EmployeeController extends Controller
         DB::transaction(function () use ($request, $data) {
 
             if ($request->hasFile('imagen')) {
-                $filename = date('Ymd_His') . '_' . uniqid() . '.' . $request->file('imagen')->getClientOriginalExtension();
-                $path = $request->file('imagen')->storeAs('empleados', $filename, 'public');
-                $data['imagen'] = $path;
+                // Guarda la imagen según el driver (local en dev, Cloudinary en prod).
+                $data['imagen'] = ImageUploader::upload($request->file('imagen'), 'empleados');
             }
 
             $person = Person::create($data);
@@ -72,14 +71,8 @@ class EmployeeController extends Controller
             $employee->load('person');
 
             if ($request->hasFile('imagen')) {
-                if ($employee->person && $employee->person->imagen) {
-                    Storage::disk('public')->delete($employee->person->imagen);
-                }
-
-                $filename = date('Ymd_His') . '_' . uniqid() . '.' .
-                    $request->file('imagen')->getClientOriginalExtension();
-                $path = $request->file('imagen')->storeAs('empleados', $filename, 'public');
-                $data['imagen'] = $path;
+                // Reemplaza la imagen (local en dev, Cloudinary en prod).
+                $data['imagen'] = ImageUploader::upload($request->file('imagen'), 'empleados');
             }
 
             $personData = collect($data)->only([
