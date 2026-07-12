@@ -125,4 +125,18 @@ class ProfileTest extends Testcase
     {
         $this->getJson('/api/profile')->assertStatus(401);
     }
+
+    public function test_document_types_list_returns_active_types(): void
+    {
+        [$user, $person, $token] = $this->authUser();
+        DocumentType::create(['name' => 'RUC']);
+        DocumentType::create(['name' => 'Carnet', 'status' => 'I']); // inactivo: no debe listarse
+
+        $response = $this->withToken($token)->getJson('/api/document-types');
+
+        $response->assertOk()->assertJson(['success' => true]);
+        $names = collect($response->json('data'))->pluck('name');
+        $this->assertTrue($names->contains('RUC'));
+        $this->assertFalse($names->contains('Carnet'));
+    }
 }

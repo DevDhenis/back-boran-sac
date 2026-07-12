@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ProductCategoryResource;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,7 +17,7 @@ class ProductCategoryController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Categorías obtenidas correctamente.',
-                'data' => $categories,
+                'data' => ProductCategoryResource::collection($categories),
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -39,13 +40,17 @@ class ProductCategoryController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Categoría creada correctamente.',
-            'data' => $category,
+            'data' => new ProductCategoryResource($category),
         ], 201);
     }
 
     public function show(ProductCategory $productCategory): JsonResponse
     {
-        return response()->json($productCategory);
+        return response()->json([
+            'success' => true,
+            'message' => 'Categoría obtenida correctamente.',
+            'data' => new ProductCategoryResource($productCategory),
+        ]);
     }
 
     public function update(Request $request, ProductCategory $productCategory): JsonResponse
@@ -60,7 +65,7 @@ class ProductCategoryController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Categoría actualizada.',
-            'data' => $productCategory,
+            'data' => new ProductCategoryResource($productCategory),
         ]);
     }
 

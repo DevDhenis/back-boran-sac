@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccessController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DocumentTypeController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
@@ -37,6 +38,9 @@ Route::middleware('jwt')->group(function () {
     // Perfil del usuario autenticado (self-service de datos personales)
     Route::get('profile', [ProfileController::class, 'show']);
     Route::post('profile/update', [ProfileController::class, 'update']);
+
+    // Catálogos para selects de formularios
+    Route::get('document-types', [DocumentTypeController::class, 'index']);
 
     Route::get('roles/{role}/accesses', [RoleController::class, 'getAccesses']);
     Route::post('roles/{role}/accesses', [RoleController::class, 'syncAccesses']);
