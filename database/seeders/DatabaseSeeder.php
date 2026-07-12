@@ -13,7 +13,6 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);           // roles: Administrador General, Cliente
         $this->call(PersonSeeder::class);         // personas: 1 admin + 1 cliente
         $this->call(UserSeeder::class);           // usuarios: 1 admin + 1 cliente
-        $this->call(EmployeeSeeder::class);       // faceta empleado del admin (cuenta staff completa)
         $this->call(ClientSeeder::class);         // faceta cliente del cliente
         $this->call(AccessSeeder::class);         // accesos/permisos del sistema
         $this->call(AccessRoleSeeder::class);     // pivote rol↔acceso (admin=todo, cliente=público)
@@ -25,6 +24,8 @@ class DatabaseSeeder extends Seeder
         // ⚠️ NO se siembran datos transaccionales ni de relleno (productos,
         //    inventario, ventas). Se cargan desde la app o corriendo manualmente
         //    sus seeders en local (p.ej. php artisan db:seed --class=ProductSeeder).
-        //    Solo se crean 2 cuentas completas: admin y cliente.
+        //    Solo se crean 2 cuentas: admin y cliente. El admin NO es colaborador
+        //    (no tiene faceta Employee); los colaboradores se cargan aparte
+        //    (p.ej. php artisan db:seed --class=DemoDataSeeder).
     }
 }
