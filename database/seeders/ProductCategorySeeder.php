@@ -72,13 +72,16 @@ class ProductCategorySeeder extends Seeder
             ],
         ];
 
+        // updateOrInsert (idempotente): busca por 'nombre'; si ya existe no duplica.
         foreach ($categories as $cat) {
-            DB::table('product_categories')->insert([
-                'nombre' => $cat['nombre'],
-                'descripcion' => $cat['descripcion'],
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            DB::table('product_categories')->updateOrInsert(
+                ['nombre' => $cat['nombre']],
+                [
+                    'descripcion' => $cat['descripcion'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
         }
     }
 }
