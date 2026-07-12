@@ -37,7 +37,7 @@ class VerifyEmailRequest extends FormRequest
         return [
             'required' => 'El campo :attribute es requerido.',
             'email.exists' => 'No existe ningún usuario con el correo proporcionado.',
-            'exists' => 'El value del campo :attribute es inválido para el correo.',
+            'exists' => 'El valor del campo :attribute es inválido para el correo.',
         ];
     }
 

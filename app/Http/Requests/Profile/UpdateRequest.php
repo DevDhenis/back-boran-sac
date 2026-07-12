@@ -36,7 +36,7 @@ class UpdateRequest extends FormRequest
             'string' => 'El :attribute debe ser texto.',
             'email' => 'El :attribute debe ser un correo válido.',
             'max' => 'El :attribute no debe exceder :max caracteres.',
-            'image' => 'El :attribute debe ser una image válida.',
+            'image' => 'El :attribute debe ser una imagen válida.',
             'mimes' => 'El :attribute debe ser un archivo de tipo: :values.',
             'unique' => 'El :attribute ya está registrado.',
             'exists' => 'El :attribute seleccionado no existe.',
@@ -53,7 +53,7 @@ class UpdateRequest extends FormRequest
             'image' => 'imagen',
             'document_number' => 'número de documento',
             'document_type_id' => 'tipo de documento',
-            'username' => 'name de usuario',
+            'username' => 'nombre de usuario',
             'email' => 'correo electrónico',
         ];
     }
