@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccessController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentTypeController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProductCategoryController;
@@ -34,6 +35,9 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::middleware('jwt')->group(function () {
+
+    // Panel ejecutivo: métricas agregadas del negocio (solo con acceso 'panel')
+    Route::get('dashboard', [DashboardController::class, 'index'])->middleware('access:panel');
 
     // Perfil del usuario autenticado (self-service de datos personales)
     Route::get('profile', [ProfileController::class, 'show']);
