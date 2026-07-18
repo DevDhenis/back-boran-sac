@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Client;
 use App\Models\Employee;
-use App\Models\InventoryManagement;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Sale;
@@ -104,9 +103,7 @@ class DashboardDemoSeeder extends Seeder
             ]);
         }
 
-        // A batch of inventory movements over the last ~60 days.
-        InventoryManagement::factory()->count(45)->create();
-
-        $this->command?->info('DashboardDemoSeeder: ventas, pagos y movimientos demo creados.');
+        // Inventory movements are owned by InventoryMovementDemoSeeder (coherent kardex).
+        $this->command?->info('DashboardDemoSeeder: ventas y pagos demo creados.');
     }
 }

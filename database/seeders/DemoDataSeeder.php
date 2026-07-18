@@ -156,5 +156,8 @@ class DemoDataSeeder extends Seeder
                 ]
             );
         }
+
+        // Build a coherent inventory ledger (kardex) for the products just seeded.
+        $this->call(InventoryMovementDemoSeeder::class);
     }
 }

@@ -13,8 +13,11 @@ class InventoryManagement extends Model
 
     protected $fillable = [
         'product_id',
+        'sale_id',
+        'sale_return_id',
         'employee_id',
         'movement_type',
+        'origin',
         'quantity',
         'reason',
         'stock_before',
@@ -43,5 +46,10 @@ class InventoryManagement extends Model
     public function employee()
     {
         return $this->belongsTo(Employee::class, 'employee_id');
+    }
+
+    public function sale()
+    {
+        return $this->belongsTo(Sale::class, 'sale_id');
     }
 }

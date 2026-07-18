@@ -21,11 +21,17 @@ class DatabaseSeeder extends Seeder
         $this->call(UnitSeeder::class);           // unidades de medida
         $this->call(ProductCategorySeeder::class); // categorías de productos
 
-        // ⚠️ NO se siembran datos transaccionales ni de relleno (productos,
-        //    inventario, ventas). Se cargan desde la app o corriendo manualmente
-        //    sus seeders en local (p.ej. php artisan db:seed --class=ProductSeeder).
-        //    Solo se crean 2 cuentas: admin y cliente. El admin NO es colaborador
-        //    (no tiene faceta Employee); los colaboradores se cargan aparte
-        //    (p.ej. php artisan db:seed --class=DemoDataSeeder).
+        // ⚠️ En PRODUCCIÓN no se siembran datos transaccionales ni de relleno:
+        //    solo lo de arriba (base + 2 cuentas). El admin NO es colaborador.
+        //
+        // 🧪 Solo en LOCAL: para que `migrate:fresh --seed` deje una BD completa y
+        //    coherente para el demo, se encadenan los seeders de relleno.
+        //    DemoDataSeeder crea productos y, a su vez, el kardex coherente
+        //    (InventoryMovementDemoSeeder); DashboardDemoSeeder crea ventas/pagos.
+        //    El guard de entorno evita que estos datos lleguen a Aiven/Render.
+        if (app()->environment('local')) {
+            $this->call(DemoDataSeeder::class);       // colaboradores + productos + inventario (kardex)
+            $this->call(DashboardDemoSeeder::class);  // ventas + pagos (para el Panel)
+        }
     }
 }
