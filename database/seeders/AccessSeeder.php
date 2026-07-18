@@ -18,6 +18,7 @@ class AccessSeeder extends Seeder
             ['name' => 'Gestión de trabajadores',  'path' => '/trabajadores', 'icon' => 'pi pi-users'],
             ['name' => 'Gestión de inventario',    'path' => '/inventario',   'icon' => 'pi pi-box'],
             ['name' => 'Ventas',                   'path' => '/ventas',       'icon' => 'pi pi-dollar'],
+            ['name' => 'Devoluciones',             'path' => '/devoluciones', 'icon' => 'pi pi-replay'],
             ['name' => 'Gestión de roles',         'path' => '/roles',        'icon' => 'pi pi-id-card'],
         ];
 
