@@ -4,12 +4,14 @@ use App\Http\Controllers\AccessController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentTypeController;
+use App\Http\Controllers\InventoryManagementController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\SaleReturnController;
 use App\Http\Controllers\ShoppingCartController;
 use App\Http\Controllers\ShoppingCartItemController;
 use App\Http\Controllers\UnitController;
@@ -64,6 +66,14 @@ Route::middleware('jwt')->group(function () {
     Route::apiResource('products', ProductController::class);
     Route::post('products/{product}/update', [ProductController::class, 'update']);
 
+    // Movimientos de inventario (libro append-only) + trazabilidad por producto
+    Route::get('inventory-movements', [InventoryManagementController::class, 'index']);
+    Route::get('inventory-movements/report', [InventoryManagementController::class, 'report']);
+    Route::post('inventory-movements', [InventoryManagementController::class, 'store']);
+    Route::get('inventory-movements/{inventoryManagement}', [InventoryManagementController::class, 'show']);
+    Route::delete('inventory-movements/{inventoryManagement}', [InventoryManagementController::class, 'destroy']);
+    Route::get('products/{product}/kardex', [InventoryManagementController::class, 'kardex']);
+
     Route::get('shopping-cart', [ShoppingCartController::class, 'index']);
     Route::post('shopping-cart/checkout', [ShoppingCartController::class, 'checkout']);
 
@@ -78,4 +88,15 @@ Route::middleware('jwt')->group(function () {
     });
 
     Route::get('my-sales', [SaleController::class, 'mySales']);
+
+    // Devoluciones — el cliente solicita; el staff (access:devoluciones) gestiona
+    Route::post('returns', [SaleReturnController::class, 'store']);
+    Route::get('my-returns', [SaleReturnController::class, 'myReturns']);
+
+    Route::middleware('access:devoluciones')->prefix('returns')->group(function () {
+        Route::get('/', [SaleReturnController::class, 'index']);
+        Route::post('{saleReturn}/approve', [SaleReturnController::class, 'approve']);
+        Route::post('{saleReturn}/reject', [SaleReturnController::class, 'reject']);
+        Route::post('{saleReturn}/refund', [SaleReturnController::class, 'refund']);
+    });
 });
