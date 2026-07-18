@@ -29,6 +29,10 @@ class ProductController extends Controller
     {
         $data = $request->validated();
 
+        // Stock is owned by the inventory ledger: a product is always created with
+        // stock 0 and loaded afterwards through a registered inbound movement.
+        $data['stock'] = 0;
+
         if ($request->hasFile('image')) {
             // Guarda la image según el driver (local en dev, Cloudinary en prod).
             $data['image'] = ImageUploader::upload($request->file('image'), 'products');
@@ -38,7 +42,7 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Producto creado correctamente.',
+            'message' => 'Producto creado. Carga su stock desde Inventario → Movimientos.',
         ], 201);
     }
 
@@ -54,6 +58,10 @@ class ProductController extends Controller
     public function update(UpdateRequest $request, Product $product): JsonResponse
     {
         $data = $request->validated();
+
+        // Stock is owned by the inventory ledger; it can only change through
+        // registered movements, never by editing the product directly.
+        unset($data['stock']);
 
         if ($request->hasFile('image')) {
             // Reemplaza la image (local en dev, Cloudinary en prod).

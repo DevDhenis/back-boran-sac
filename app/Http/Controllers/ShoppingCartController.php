@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ShoppingCartResource;
+use App\Models\InventoryManagement;
 use App\Models\Payment;
 use App\Models\Sale;
 use App\Models\SalesItem;
@@ -101,8 +102,25 @@ class ShoppingCartController extends Controller
                     'subtotal' => $item->subtotal,
                 ]);
 
+                // Stock leaves through the inventory ledger (traceable), not a direct decrement.
                 $product = $item->product;
-                $product->stock -= $item->quantity;
+                $stockBefore = (float) $product->stock;
+                $stockAfter = $stockBefore - (float) $item->quantity;
+
+                InventoryManagement::create([
+                    'product_id' => $product->id,
+                    'sale_id' => $sale->id,
+                    'employee_id' => null,
+                    'movement_type' => 'outbound',
+                    'origin' => 'sale',
+                    'quantity' => (float) $item->quantity,
+                    'reason' => "Venta #{$sale->id}",
+                    'stock_before' => $stockBefore,
+                    'stock_after' => $stockAfter,
+                    'movement_date' => now(),
+                ]);
+
+                $product->stock = $stockAfter;
                 $product->save();
             }
 
