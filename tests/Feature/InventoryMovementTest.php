@@ -67,19 +67,34 @@ class InventoryMovementTest extends TestCase
         ]);
     }
 
-    public function test_inbound_increases_stock(): void
+    public function test_manual_inbound_is_rejected(): void
+    {
+        $token = $this->token();
+        $product = $this->makeProduct(100);
+
+        // Manual "Entrada" no longer exists: stock enters via Compras (o corrección por Ajuste).
+        $this->postJson('/api/inventory-movements', [
+            'product_id' => $product->id,
+            'movement_type' => 'inbound',
+            'quantity' => 20,
+        ], ['Authorization' => "Bearer {$token}"])
+            ->assertStatus(422);
+    }
+
+    public function test_adjustment_sets_stock(): void
     {
         $token = $this->token();
         $product = $this->makeProduct(100);
 
         $this->postJson('/api/inventory-movements', [
             'product_id' => $product->id,
-            'movement_type' => 'inbound',
+            'movement_type' => 'adjustment',
             'quantity' => 20,
-            'reason' => 'Compra',
+            'stock_after' => 120,
+            'reason' => 'Ajuste por conteo',
         ], ['Authorization' => "Bearer {$token}"])
             ->assertCreated()
-            ->assertJson(['success' => true, 'data' => ['stock_before' => 100, 'stock_after' => 120]]);
+            ->assertJson(['data' => ['stock_after' => 120]]);
 
         $this->assertEquals(120, $product->fresh()->stock);
     }
@@ -168,11 +183,11 @@ class InventoryMovementTest extends TestCase
         $auth = ['Authorization' => "Bearer {$token}"];
 
         $first = $this->postJson('/api/inventory-movements', [
-            'product_id' => $product->id, 'movement_type' => 'inbound', 'quantity' => 10,
+            'product_id' => $product->id, 'movement_type' => 'adjustment', 'quantity' => 10, 'stock_after' => 110,
         ], $auth)->json('data.id');
 
         $this->postJson('/api/inventory-movements', [
-            'product_id' => $product->id, 'movement_type' => 'inbound', 'quantity' => 5,
+            'product_id' => $product->id, 'movement_type' => 'adjustment', 'quantity' => 5, 'stock_after' => 105,
         ], $auth);
 
         // Voiding the older movement is rejected (append-only ledger).
@@ -247,7 +262,7 @@ class InventoryMovementTest extends TestCase
         $auth = ['Authorization' => "Bearer {$token}"];
 
         $this->postJson('/api/inventory-movements', [
-            'product_id' => $product->id, 'movement_type' => 'inbound', 'quantity' => 10,
+            'product_id' => $product->id, 'movement_type' => 'adjustment', 'quantity' => 10, 'stock_after' => 110,
         ], $auth);
 
         $this->getJson("/api/products/{$product->id}/kardex", $auth)

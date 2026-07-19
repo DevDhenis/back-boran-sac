@@ -14,7 +14,7 @@ class InventoryManagementController extends Controller
 {
     public function index(): JsonResponse
     {
-        $query = InventoryManagement::with(['product', 'employee.person', 'sale'])
+        $query = InventoryManagement::with(['product', 'employee.person', 'sale', 'supplier'])
             ->orderByDesc('movement_date')
             ->orderByDesc('id');
 
@@ -23,6 +23,9 @@ class InventoryManagementController extends Controller
         }
         if (request('movement_type')) {
             $query->where('movement_type', request('movement_type'));
+        }
+        if (request('origin')) {
+            $query->where('origin', request('origin'));
         }
         if (request('status')) {
             $query->where('status', request('status'));
@@ -154,7 +157,7 @@ class InventoryManagementController extends Controller
      */
     public function kardex(Product $product): JsonResponse
     {
-        $movements = InventoryManagement::with(['employee.person', 'sale'])
+        $movements = InventoryManagement::with(['employee.person', 'sale', 'supplier'])
             ->where('product_id', $product->id)
             ->where('status', 'active')
             ->orderBy('movement_date')
@@ -188,7 +191,7 @@ class InventoryManagementController extends Controller
         $to = $request->query('to');
         $productId = $request->query('product_id');
 
-        $query = InventoryManagement::with('employee.person')->where('status', 'active');
+        $query = InventoryManagement::with(['employee.person', 'supplier'])->where('status', 'active');
 
         if ($from) {
             $query->whereDate('movement_date', '>=', $from);
@@ -230,6 +233,7 @@ class InventoryManagementController extends Controller
                         'stock_after' => (float) $m->stock_after,
                         'reason' => $m->reason,
                         'sale_id' => $m->sale_id,
+                        'supplier' => $m->supplier?->name,
                         'employee' => $person
                             ? trim("{$person->first_name} {$person->last_name}")
                             : '—',
@@ -245,7 +249,7 @@ class InventoryManagementController extends Controller
         }
 
         $byOrigin = [];
-        foreach (['manual', 'sale', 'sale_cancellation', 'customer_return'] as $o) {
+        foreach (['manual', 'sale', 'sale_cancellation', 'customer_return', 'purchase', 'supplier_return'] as $o) {
             $byOrigin[$o] = $movements->where('origin', $o)->count();
         }
 
