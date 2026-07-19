@@ -19,6 +19,8 @@ class AccessSeeder extends Seeder
             ['name' => 'Gestión de inventario',    'path' => '/inventario',   'icon' => 'pi pi-box'],
             ['name' => 'Ventas',                   'path' => '/ventas',       'icon' => 'pi pi-dollar'],
             ['name' => 'Devoluciones',             'path' => '/devoluciones', 'icon' => 'pi pi-replay'],
+            ['name' => 'Proveedores',              'path' => '/proveedores',  'icon' => 'pi pi-truck'],
+            ['name' => 'Compras',                  'path' => '/compras',      'icon' => 'pi pi-shopping-cart'],
             ['name' => 'Gestión de roles',         'path' => '/roles',        'icon' => 'pi pi-id-card'],
         ];
 

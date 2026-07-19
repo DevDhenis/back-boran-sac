@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
         //    (InventoryMovementDemoSeeder); DashboardDemoSeeder crea ventas/pagos.
         //    El guard de entorno evita que estos datos lleguen a Aiven/Render.
         if (app()->environment('local')) {
+            $this->call(SupplierSeeder::class);       // catálogo de proveedores (demo)
             $this->call(DemoDataSeeder::class);       // colaboradores + productos + inventario (kardex)
             $this->call(DashboardDemoSeeder::class);  // ventas + pagos (para el Panel)
         }

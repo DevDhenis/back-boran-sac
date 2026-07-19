@@ -9,9 +9,12 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\SaleReturnController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\SupplierReturnController;
 use App\Http\Controllers\ShoppingCartController;
 use App\Http\Controllers\ShoppingCartItemController;
 use App\Http\Controllers\UnitController;
@@ -60,6 +63,21 @@ Route::middleware('jwt')->group(function () {
     Route::post('employees/{employee}/update', [EmployeeController::class, 'update']);
     Route::patch('employees/{id}/suspend', [EmployeeController::class, 'suspend']);
     Route::patch('employees/{id}/activate', [EmployeeController::class, 'activate']);
+
+    // Proveedores (gestión, solo staff con access:proveedores)
+    Route::apiResource('suppliers', SupplierController::class)->middleware('access:proveedores');
+
+    // Compras a proveedor (staff con access:compras) -> generan entradas trazables
+    Route::middleware('access:compras')->group(function () {
+        Route::get('purchases', [PurchaseController::class, 'index']);
+        Route::post('purchases', [PurchaseController::class, 'store']);
+        Route::get('purchases/{purchase}', [PurchaseController::class, 'show']);
+
+        // Devolución a proveedor
+        Route::get('supplier-returns', [SupplierReturnController::class, 'index']);
+        Route::post('supplier-returns', [SupplierReturnController::class, 'store']);
+        Route::post('supplier-returns/{supplierReturn}/credit', [SupplierReturnController::class, 'credit']);
+    });
 
     Route::apiResource('product-categories', ProductCategoryController::class);
     Route::apiResource('units', UnitController::class);
