@@ -28,6 +28,7 @@ class InventoryMovementResource extends JsonResource
             'movement_date' => $this->movement_date,
             'status' => $this->status,
             'sale_id' => $this->sale_id,
+            'supplier' => $this->whenLoaded('supplier', fn () => $this->supplier?->name),
             'product' => $this->whenLoaded('product', fn () => [
                 'id' => $this->product->id,
                 'internal_code' => $this->product->internal_code,

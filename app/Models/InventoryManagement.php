@@ -15,6 +15,9 @@ class InventoryManagement extends Model
         'product_id',
         'sale_id',
         'sale_return_id',
+        'purchase_id',
+        'supplier_id',
+        'supplier_return_id',
         'employee_id',
         'movement_type',
         'origin',
@@ -51,5 +54,15 @@ class InventoryManagement extends Model
     public function sale()
     {
         return $this->belongsTo(Sale::class, 'sale_id');
+    }
+
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class, 'supplier_id');
+    }
+
+    public function purchase()
+    {
+        return $this->belongsTo(Purchase::class, 'purchase_id');
     }
 }
