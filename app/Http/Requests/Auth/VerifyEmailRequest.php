@@ -26,9 +26,9 @@ class VerifyEmailRequest extends FormRequest
             'email' => 'required|email|exists:users,email',
             'code' => [
                 'required',
-                Rule::exists('users', 'codigo_verificacion')
-                    ->where(fn($query) => $query->where('email', $this->email))
-            ]
+                Rule::exists('users', 'verification_code')
+                    ->where(fn ($query) => $query->where('email', $this->email)),
+            ],
         ];
     }
 
@@ -37,7 +37,7 @@ class VerifyEmailRequest extends FormRequest
         return [
             'required' => 'El campo :attribute es requerido.',
             'email.exists' => 'No existe ningún usuario con el correo proporcionado.',
-            'exists' => 'El valor del campo :attribute es inválido para el correo.'
+            'exists' => 'El valor del campo :attribute es inválido para el correo.',
         ];
     }
 
@@ -45,7 +45,7 @@ class VerifyEmailRequest extends FormRequest
     {
         return [
             'email' => 'correo electrónico',
-            'code' => 'código'
+            'code' => 'código',
         ];
     }
 }

@@ -1,21 +1,29 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AccessController;
-use App\Http\Controllers\RoleController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DocumentTypeController;
+use App\Http\Controllers\InventoryManagementController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProductCategoryController;
-use App\Http\Controllers\UnitController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SaleController;
+use App\Http\Controllers\SaleReturnController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\SupplierReturnController;
 use App\Http\Controllers\ShoppingCartController;
 use App\Http\Controllers\ShoppingCartItemController;
-use App\Http\Controllers\SaleController;
+use App\Http\Controllers\UnitController;
+use Illuminate\Support\Facades\Route;
 
 // Healthcheck público (sin auth): sirve para verificar que el backend responde en Render.
 Route::get('/health', function () {
     return response()->json([
-        'status'  => 'ok',
+        'status' => 'ok',
         'message' => 'Backend Laravel funcionando',
     ]);
 });
@@ -24,6 +32,8 @@ Route::prefix('auth')->group(function () {
     Route::get('me', [AuthController::class, 'me']);
     Route::post('login', [AuthController::class, 'login']);
     Route::post('register', [AuthController::class, 'register']);
+    Route::post('verify-email', [AuthController::class, 'verifyEmail']);
+    Route::post('resend-code', [AuthController::class, 'resendCode']);
     Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('reset-password', [AuthController::class, 'resetPassword']);
     Route::post('verify-recovery-code', [AuthController::class, 'verifyRecoveryCode']);
@@ -31,7 +41,15 @@ Route::prefix('auth')->group(function () {
 
 Route::middleware('jwt')->group(function () {
 
-    Route::post('auth/verify-email', [AuthController::class, 'verifyEmail']);
+    // Panel ejecutivo: métricas agregadas del negocio (solo con acceso 'panel')
+    Route::get('dashboard', [DashboardController::class, 'index'])->middleware('access:panel');
+
+    // Perfil del usuario autenticado (self-service de datos personales)
+    Route::get('profile', [ProfileController::class, 'show']);
+    Route::post('profile/update', [ProfileController::class, 'update']);
+
+    // Catálogos para selects de formularios
+    Route::get('document-types', [DocumentTypeController::class, 'index']);
 
     Route::get('roles/{role}/accesses', [RoleController::class, 'getAccesses']);
     Route::post('roles/{role}/accesses', [RoleController::class, 'syncAccesses']);
@@ -46,10 +64,33 @@ Route::middleware('jwt')->group(function () {
     Route::patch('employees/{id}/suspend', [EmployeeController::class, 'suspend']);
     Route::patch('employees/{id}/activate', [EmployeeController::class, 'activate']);
 
+    // Proveedores (gestión, solo staff con access:proveedores)
+    Route::apiResource('suppliers', SupplierController::class)->middleware('access:proveedores');
+
+    // Compras a proveedor (staff con access:compras) -> generan entradas trazables
+    Route::middleware('access:compras')->group(function () {
+        Route::get('purchases', [PurchaseController::class, 'index']);
+        Route::post('purchases', [PurchaseController::class, 'store']);
+        Route::get('purchases/{purchase}', [PurchaseController::class, 'show']);
+
+        // Devolución a proveedor
+        Route::get('supplier-returns', [SupplierReturnController::class, 'index']);
+        Route::post('supplier-returns', [SupplierReturnController::class, 'store']);
+        Route::post('supplier-returns/{supplierReturn}/credit', [SupplierReturnController::class, 'credit']);
+    });
+
     Route::apiResource('product-categories', ProductCategoryController::class);
     Route::apiResource('units', UnitController::class);
     Route::apiResource('products', ProductController::class);
     Route::post('products/{product}/update', [ProductController::class, 'update']);
+
+    // Movimientos de inventario (libro append-only) + trazabilidad por producto
+    Route::get('inventory-movements', [InventoryManagementController::class, 'index']);
+    Route::get('inventory-movements/report', [InventoryManagementController::class, 'report']);
+    Route::post('inventory-movements', [InventoryManagementController::class, 'store']);
+    Route::get('inventory-movements/{inventoryManagement}', [InventoryManagementController::class, 'show']);
+    Route::delete('inventory-movements/{inventoryManagement}', [InventoryManagementController::class, 'destroy']);
+    Route::get('products/{product}/kardex', [InventoryManagementController::class, 'kardex']);
 
     Route::get('shopping-cart', [ShoppingCartController::class, 'index']);
     Route::post('shopping-cart/checkout', [ShoppingCartController::class, 'checkout']);
@@ -65,4 +106,15 @@ Route::middleware('jwt')->group(function () {
     });
 
     Route::get('my-sales', [SaleController::class, 'mySales']);
+
+    // Devoluciones — el cliente solicita; el staff (access:devoluciones) gestiona
+    Route::post('returns', [SaleReturnController::class, 'store']);
+    Route::get('my-returns', [SaleReturnController::class, 'myReturns']);
+
+    Route::middleware('access:devoluciones')->prefix('returns')->group(function () {
+        Route::get('/', [SaleReturnController::class, 'index']);
+        Route::post('{saleReturn}/approve', [SaleReturnController::class, 'approve']);
+        Route::post('{saleReturn}/reject', [SaleReturnController::class, 'reject']);
+        Route::post('{saleReturn}/refund', [SaleReturnController::class, 'refund']);
+    });
 });

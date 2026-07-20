@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class InventoryManagement extends Model
 {
@@ -13,21 +13,32 @@ class InventoryManagement extends Model
 
     protected $fillable = [
         'product_id',
+        'sale_id',
+        'sale_return_id',
+        'purchase_id',
+        'supplier_id',
+        'supplier_return_id',
         'employee_id',
-        'tipo_movimiento',
-        'cantidad',
-        'motivo',
-        'stock_antes',
-        'stock_despues',
-        'fecha_movimiento',
-        'estado_registro',
+        'movement_type',
+        'origin',
+        'quantity',
+        'reason',
+        'stock_before',
+        'stock_after',
+        'movement_date',
+        'status',
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
     ];
 
     protected $casts = [
-        'cantidad' => 'decimal:3',
-        'stock_antes' => 'decimal:3',
-        'stock_despues' => 'decimal:3',
-        'fecha_movimiento' => 'datetime',
+        'quantity' => 'decimal:3',
+        'stock_before' => 'decimal:3',
+        'stock_after' => 'decimal:3',
+        'movement_date' => 'datetime',
     ];
 
     public function product()
@@ -38,5 +49,20 @@ class InventoryManagement extends Model
     public function employee()
     {
         return $this->belongsTo(Employee::class, 'employee_id');
+    }
+
+    public function sale()
+    {
+        return $this->belongsTo(Sale::class, 'sale_id');
+    }
+
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class, 'supplier_id');
+    }
+
+    public function purchase()
+    {
+        return $this->belongsTo(Purchase::class, 'purchase_id');
     }
 }

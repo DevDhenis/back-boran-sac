@@ -10,14 +10,20 @@ class Client extends Model
     use HasFactory;
 
     protected $table = 'clients';
+
     protected $primaryKey = 'id';
 
     protected $fillable = [
         'person_id',
-        'cantidad_compras',
-        'cantidad_compras_aceptadas',
-        'cantidad_compras_rechazadas',
-        'cantidad_compras_devueltas',
+        'total_purchases',
+        'accepted_purchases',
+        'rejected_purchases',
+        'returned_purchases',
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
     ];
 
     public function person()

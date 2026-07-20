@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\ResendCodeRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\VerifyEmailRequest;
 use App\Http\Requests\Auth\VerifyRecoveryCodeRequest;
 use App\Http\Resources\PersonResource;
-use App\Mail\CodigoRecuperacionEmail;
-use App\Mail\CodigoVerificacionEmail;
+use App\Mail\RecoveryCodeMail;
+use App\Mail\VerificationCodeMail;
 use App\Models\Client;
 use App\Models\Person;
 use App\Models\User;
@@ -27,36 +28,45 @@ class AuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        if (!$token = JWTAuth::attempt($credentials)) {
+        if (! $token = JWTAuth::attempt($credentials)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Credenciales inválidas'
+                'message' => 'Credenciales inválidas',
             ], 401);
         }
 
         $user = Auth::user();
+
+        // Bloquea el acceso hasta que el correo esté verificado.
+        if (is_null($user->email_verified_at)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Debes verificar tu correo antes de iniciar sesión.',
+                'requires_verification' => true,
+            ], 403);
+        }
 
         $role = $user->role()->with('accesses')->first();
 
         return response()->json([
             'success' => true,
             'message' => 'Inicio de sesión exitoso',
-            'token'   => $token,
-            'user'    => [
-                'id'       => $user->id,
+            'token' => $token,
+            'user' => [
+                'id' => $user->id,
                 'username' => $user->username,
-                'email'    => $user->email,
-                'role'     => $role->nombre,
-                'role_id'  => $role->id,
+                'email' => $user->email,
+                'role' => $role->name,
+                'role_id' => $role->id,
                 'accesses' => $role->accesses,
-                'person'   => new PersonResource($user->person),
+                'person' => new PersonResource($user->person),
             ],
         ]);
     }
 
     public function register(RegisterRequest $request)
     {
-        $persona = Person::create($request->validated());
+        $person = Person::create($request->validated());
 
         $code = strtoupper(Str::random(8));
         $user = User::create([
@@ -64,60 +74,83 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => $request->password,
             'role_id' => 2,
-            'person_id' => $persona->id,
-            'codigo_verificacion' => $code,
+            'person_id' => $person->id,
+            'verification_code' => $code,
         ]);
 
         Client::create([
-            'person_id' => $persona->id,
-            'cantidad_compras' => 0,
-            'cantidad_compras_aceptadas' => 0,
-            'cantidad_compras_rechazadas' => 0,
-            'cantidad_compras_devueltas' => 0,
+            'person_id' => $person->id,
+            'total_purchases' => 0,
+            'accepted_purchases' => 0,
+            'rejected_purchases' => 0,
+            'returned_purchases' => 0,
         ]);
 
-        $token = JWTAuth::fromUser($user);
+        Mail::to($user->email)->send(new VerificationCodeMail($code, $person));
 
-        Mail::to($user->email)->send(new CodigoVerificacionEmail($code, $persona));
-
+        // No se devuelve token: el usuario debe verificar su correo antes de
+        // poder iniciar sesión. El front va directo a la pantalla de verificación.
         return response()->json([
             'success' => true,
-            'message' => 'Usuario registrado con éxito',
-            'token' => $token
+            'message' => 'Usuario registrado. Te enviamos un código de verificación a tu correo.',
+            'requires_verification' => true,
         ], 201);
     }
+
     public function verifyEmail(VerifyEmailRequest $request)
     {
-        // Aceptar tanto 'code' como 'codigo_verificacion'
-        $codigo = $request->codigo_verificacion ?? $request->code;
+        // Aceptar tanto 'code' como 'verification_code'
+        $code = $request->verification_code ?? $request->code;
 
-        if (!$codigo) {
+        if (! $code) {
             return response()->json([
                 'success' => false,
-                'message' => 'Código de verificación requerido.'
+                'message' => 'Código de verificación requerido.',
             ], 400);
         }
 
         $user = User::where('email', $request->email)
-            ->where('codigo_verificacion', strtoupper($codigo))
+            ->where('verification_code', strtoupper($code))
             ->first();
 
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'success' => false,
-                'message' => 'Código o email inválido/expirado.'
+                'message' => 'Código o email inválido/expirado.',
             ], 400);
         }
 
         $user->update([
             'email_verified_at' => now(),
-            'codigo_verificacion' => null
+            'verification_code' => null,
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Correo verificado correctamente',
-            'data' => new PersonResource($user->person)
+            'data' => new PersonResource($user->person),
+        ]);
+    }
+
+    public function resendCode(ResendCodeRequest $request): JsonResponse
+    {
+        $user = User::where('email', $request->email)->first();
+
+        if (! is_null($user->email_verified_at)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'El correo ya está verificado.',
+            ], 409);
+        }
+
+        $code = strtoupper(Str::random(8));
+        $user->update(['verification_code' => $code]);
+
+        Mail::to($user->email)->send(new VerificationCodeMail($code, $user->person));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Código de verificación reenviado a tu correo.',
         ]);
     }
 
@@ -125,7 +158,7 @@ class AuthController extends Controller
     {
         return response()->json([
             'success' => true,
-            'message' => 'Código de recuperación verificado correctamente'
+            'message' => 'Código de recuperación verificado correctamente',
         ]);
     }
 
@@ -134,37 +167,37 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         $code = strtoupper(Str::random(8));
-        $user->update(['codigo_recuperacion' => $code]);
+        $user->update(['recovery_code' => $code]);
 
-        Mail::to($user->email)->send(new CodigoRecuperacionEmail($code, $user->person));
+        Mail::to($user->email)->send(new RecoveryCodeMail($code, $user->person));
 
         return response()->json([
             'success' => true,
-            'message' => 'Se ha enviado un código de recuperación a tu correo electrónico.'
+            'message' => 'Se ha enviado un código de recuperación a tu correo electrónico.',
         ]);
     }
 
     public function resetPassword(ResetPasswordRequest $request): JsonResponse
     {
         $user = User::where('email', $request->email)
-            ->where('codigo_recuperacion', $request->code)
+            ->where('recovery_code', $request->code)
             ->first();
 
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'success' => false,
-                'message' => 'Código de recuperación inválido o expirado.'
+                'message' => 'Código de recuperación inválido o expirado.',
             ], 400);
         }
 
         $user->update([
             'password' => Hash::make($request->password),
-            'codigo_recuperacion' => null,
+            'recovery_code' => null,
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Contraseña actualizada correctamente.'
+            'message' => 'Contraseña actualizada correctamente.',
         ]);
     }
 
@@ -172,27 +205,26 @@ class AuthController extends Controller
     {
         $user = auth()->user();
 
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'success' => false,
                 'message' => 'Token inválido o expirado',
             ], 401);
         }
 
-
         $role = $user->role()->with('accesses.children')->first();
 
         return response()->json([
             'success' => true,
             'message' => 'Usuario autenticado',
-            'user'    => [
-                'id'       => $user->id,
+            'user' => [
+                'id' => $user->id,
                 'username' => $user->username,
-                'email'    => $user->email,
-                'role'     => $role->nombre,
-                'role_id'  => $role->id,
+                'email' => $user->email,
+                'role' => $role->name,
+                'role_id' => $role->id,
                 'accesses' => $role->accesses,
-                'person'   => new PersonResource($user->person),
+                'person' => new PersonResource($user->person),
             ],
         ]);
     }

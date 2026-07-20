@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SalesItem extends Model
@@ -17,6 +17,11 @@ class SalesItem extends Model
         'price',
         'discount',
         'subtotal',
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
     ];
 
     protected $casts = [

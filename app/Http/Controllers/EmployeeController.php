@@ -8,7 +8,6 @@ use App\Http\Resources\EmployeeResource;
 use App\Models\Employee;
 use App\Models\Person;
 use App\Support\ImageUploader;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -21,7 +20,7 @@ class EmployeeController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Lista de empleados obtenida correctamente.',
-            'data'    => EmployeeResource::collection($employees)
+            'data' => EmployeeResource::collection($employees),
         ]);
     }
 
@@ -31,24 +30,24 @@ class EmployeeController extends Controller
 
         DB::transaction(function () use ($request, $data) {
 
-            if ($request->hasFile('imagen')) {
-                // Guarda la imagen según el driver (local en dev, Cloudinary en prod).
-                $data['imagen'] = ImageUploader::upload($request->file('imagen'), 'empleados');
+            if ($request->hasFile('image')) {
+                // Guarda la image según el driver (local en dev, Cloudinary en prod).
+                $data['image'] = ImageUploader::upload($request->file('image'), 'empleados');
             }
 
             $person = Person::create($data);
 
             return Employee::create([
-                'person_id'       => $person->id,
-                'horario_laboral' => $data['horario_laboral'],
-                'sueldo'          => $data['sueldo'],
-                'estado_registro' => 'A',
+                'person_id' => $person->id,
+                'work_schedule' => $data['work_schedule'],
+                'salary' => $data['salary'],
+                'status' => 'A',
             ]);
         });
 
         return response()->json([
             'success' => true,
-            'message' => 'Empleado registrado correctamente'
+            'message' => 'Empleado registrado correctamente',
         ], 201);
     }
 
@@ -59,7 +58,7 @@ class EmployeeController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Empleado obtenido correctamente.',
-            'data'    => new EmployeeResource($employee)
+            'data' => new EmployeeResource($employee),
         ]);
     }
 
@@ -70,32 +69,32 @@ class EmployeeController extends Controller
 
             $employee->load('person');
 
-            if ($request->hasFile('imagen')) {
-                // Reemplaza la imagen (local en dev, Cloudinary en prod).
-                $data['imagen'] = ImageUploader::upload($request->file('imagen'), 'empleados');
+            if ($request->hasFile('image')) {
+                // Reemplaza la image (local en dev, Cloudinary en prod).
+                $data['image'] = ImageUploader::upload($request->file('image'), 'empleados');
             }
 
             $personData = collect($data)->only([
-                'nombres',
-                'apellido_paterno',
-                'apellido_materno',
-                'direccion',
-                'imagen',
-                'numero_documento',
-                'document_type_id'
+                'first_name',
+                'last_name',
+                'second_last_name',
+                'address',
+                'image',
+                'document_number',
+                'document_type_id',
             ])->toArray();
 
             $employeeData = collect($data)->only([
-                'horario_laboral',
-                'sueldo',
-                'estado_registro'
+                'work_schedule',
+                'salary',
+                'status',
             ])->toArray();
 
-            if (!empty($personData) && $employee->person) {
+            if (! empty($personData) && $employee->person) {
                 $employee->person->update($personData);
             }
 
-            if (!empty($employeeData)) {
+            if (! empty($employeeData)) {
                 $employee->update($employeeData);
             }
         });
@@ -113,7 +112,7 @@ class EmployeeController extends Controller
             $person = $employee->person;
 
             if ($person->user) {
-                $person->user->update(['estado_registro' => 'I']);
+                $person->user->update(['status' => 'I']);
             }
 
             $employee->delete();
@@ -122,19 +121,18 @@ class EmployeeController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Empleado eliminado correctamente.'
+                'message' => 'Empleado eliminado correctamente.',
             ]);
         });
     }
 
-
     public function suspend($id)
     {
         $employee = Employee::findOrFail($id);
-        $employee->update(['estado_registro' => 'I']);
+        $employee->update(['status' => 'I']);
 
         if ($employee->person && $employee->person->user) {
-            $employee->person->user->update(['estado_registro' => 'I']);
+            $employee->person->user->update(['status' => 'I']);
         }
 
         return response()->json(['message' => 'Empleado suspendido correctamente']);
@@ -143,7 +141,8 @@ class EmployeeController extends Controller
     public function activate($id)
     {
         $employee = Employee::findOrFail($id);
-        $employee->update(['estado_registro' => 'A']);
+        $employee->update(['status' => 'A']);
+
         return response()->json(['message' => 'Empleado activado correctamente']);
     }
 }

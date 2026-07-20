@@ -7,26 +7,26 @@ use Illuminate\Support\Facades\DB;
 
 class ClientSeeder extends Seeder
 {
-  public function run(): void
-  {
-    $persons = DB::table('persons')
-      ->whereIn('numero_documento', [
-        '88888888',
-        '77777777'
-      ])->get();
+    public function run(): void
+    {
+        $clientPerson = DB::table('persons')
+            ->where('document_number', '88888888')
+            ->first();
 
-    foreach ($persons as $p) {
-      DB::table('clients')->updateOrInsert(
-        ['person_id' => $p->id],
-        [
-          'cantidad_compras' => 0,
-          'cantidad_compras_aceptadas' => 0,
-          'cantidad_compras_rechazadas' => 0,
-          'cantidad_compras_devueltas' => 0,
-          'created_at' => now(),
-          'updated_at' => now(),
-        ]
-      );
+        if (! $clientPerson) {
+            return;
+        }
+
+        DB::table('clients')->updateOrInsert(
+            ['person_id' => $clientPerson->id],
+            [
+                'total_purchases' => 0,
+                'accepted_purchases' => 0,
+                'rejected_purchases' => 0,
+                'returned_purchases' => 0,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
     }
-  }
 }

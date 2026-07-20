@@ -11,73 +11,73 @@ class ProductCategorySeeder extends Seeder
     {
         $categories = [
             [
-                'nombre' => 'Herramientas manuales',
-                'descripcion' => 'Martillos, destornilladores, alicates, llaves, sierras manuales.',
+                'name' => 'Herramientas manuales',
+                'description' => 'Martillos, destornilladores, alicates, llaves, sierras manuales.',
             ],
             [
-                'nombre' => 'Herramientas eléctricas',
-                'descripcion' => 'Taladros, amoladoras, sierras eléctricas, pulidoras.',
+                'name' => 'Herramientas eléctricas',
+                'description' => 'Taladros, amoladoras, sierras eléctricas, pulidoras.',
             ],
             [
-                'nombre' => 'Electricidad',
-                'descripcion' => 'Cables, interruptores, focos, tableros eléctricos, tomacorrientes.',
+                'name' => 'Electricidad',
+                'description' => 'Cables, interruptores, focos, tableros eléctricos, tomacorrientes.',
             ],
             [
-                'nombre' => 'Fontanería',
-                'descripcion' => 'Tuberías, válvulas, grifos, conexiones y accesorios sanitarios.',
+                'name' => 'Fontanería',
+                'description' => 'Tuberías, válvulas, grifos, conexiones y accesorios sanitarios.',
             ],
             [
-                'nombre' => 'Pinturas y acabados',
-                'descripcion' => 'Pinturas, barnices, solventes, rodillos, brochas.',
+                'name' => 'Pinturas y acabados',
+                'description' => 'Pinturas, barnices, solventes, rodillos, brochas.',
             ],
             [
-                'nombre' => 'Construcción',
-                'descripcion' => 'Cemento, ladrillos, varillas, mallas y agregados.',
+                'name' => 'Construcción',
+                'description' => 'Cemento, ladrillos, varillas, mallas y agregados.',
             ],
             [
-                'nombre' => 'Fijaciones',
-                'descripcion' => 'Clavos, tornillos, pernos, tuercas, arandelas y anclajes.',
+                'name' => 'Fijaciones',
+                'description' => 'Clavos, tornillos, pernos, tuercas, arandelas y anclajes.',
             ],
             [
-                'nombre' => 'Seguridad industrial',
-                'descripcion' => 'Guantes, cascos, lentes, botas, mascarillas.',
+                'name' => 'Seguridad industrial',
+                'description' => 'Guantes, cascos, lentes, botas, mascarillas.',
             ],
             [
-                'nombre' => 'Iluminación',
-                'descripcion' => 'Focos LED, lámparas, reflectores, apliques.',
+                'name' => 'Iluminación',
+                'description' => 'Focos LED, lámparas, reflectores, apliques.',
             ],
             [
-                'nombre' => 'Abrasivos',
-                'descripcion' => 'Lijas, discos de corte, discos flap, bandas abrasivas.',
+                'name' => 'Abrasivos',
+                'description' => 'Lijas, discos de corte, discos flap, bandas abrasivas.',
             ],
             [
-                'nombre' => 'Selladores y adhesivos',
-                'descripcion' => 'Siliconas, adhesivos, pegamentos, espumas expansivas.',
+                'name' => 'Selladores y adhesivos',
+                'description' => 'Siliconas, adhesivos, pegamentos, espumas expansivas.',
             ],
             [
-                'nombre' => 'Ferretería general',
-                'descripcion' => 'Bisagras, candados, cerraduras, cadenas, manillas.',
+                'name' => 'Ferretería general',
+                'description' => 'Bisagras, candados, cerraduras, cadenas, manillas.',
             ],
             [
-                'nombre' => 'Tuberías y accesorios',
-                'descripcion' => 'PVC, CPVC, accesorios para desagüe y presión.',
+                'name' => 'Tuberías y accesorios',
+                'description' => 'PVC, CPVC, accesorios para desagüe y presión.',
             ],
             [
-                'nombre' => 'Jardinería',
-                'descripcion' => 'Tijeras, mangueras, aspersores, herramientas de jardín.',
+                'name' => 'Jardinería',
+                'description' => 'Tijeras, mangueras, aspersores, herramientas de jardín.',
             ],
             [
-                'nombre' => 'Equipos y maquinaria',
-                'descripcion' => 'Compresores, generadores, motobombas.',
+                'name' => 'Equipos y maquinaria',
+                'description' => 'Compresores, generadores, motobombas.',
             ],
         ];
 
-        // updateOrInsert (idempotente): busca por 'nombre'; si ya existe no duplica.
+        // updateOrInsert (idempotente): busca por 'name'; si ya existe no duplica.
         foreach ($categories as $cat) {
             DB::table('product_categories')->updateOrInsert(
-                ['nombre' => $cat['nombre']],
+                ['name' => $cat['name']],
                 [
-                    'descripcion' => $cat['descripcion'],
+                    'description' => $cat['description'],
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]

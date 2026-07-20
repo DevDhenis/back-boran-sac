@@ -10,11 +10,17 @@ class Unit extends Model
     use HasFactory;
 
     protected $table = 'units';
+
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'nombre',
-        'abreviatura',
+        'name',
+        'abbreviation',
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
     ];
 
     public function products()

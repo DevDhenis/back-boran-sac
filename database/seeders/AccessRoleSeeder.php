@@ -13,21 +13,21 @@ class AccessRoleSeeder extends Seeder
             $now = now();
 
             // Rol Admin -> todos los accesos
-            $adminRoleId = DB::table('roles')->where('nombre', 'Administrador General')->value('id');
+            $adminRoleId = DB::table('roles')->where('name', 'Administrador General')->value('id');
             $allAccessIds = DB::table('accesses')->pluck('id');
             $rows = [];
 
             foreach ($allAccessIds as $accessId) {
                 $rows[] = [
-                    'role_id'    => $adminRoleId,
-                    'access_id'  => $accessId,
+                    'role_id' => $adminRoleId,
+                    'access_id' => $accessId,
                     'created_at' => $now,
                     'updated_at' => $now,
                 ];
             }
 
             // Rol Cliente -> solo accesos públicos
-            $clientRoleId = DB::table('roles')->where('nombre', 'Cliente')->value('id');
+            $clientRoleId = DB::table('roles')->where('name', 'Cliente')->value('id');
             $publicAccessNames = [
                 'Catálogo',
                 'Carrito de compras',
@@ -37,19 +37,19 @@ class AccessRoleSeeder extends Seeder
             ];
 
             $publicAccessIds = DB::table('accesses')
-                ->whereIn('nombre', $publicAccessNames)
+                ->whereIn('name', $publicAccessNames)
                 ->pluck('id');
 
             foreach ($publicAccessIds as $accessId) {
                 $rows[] = [
-                    'role_id'    => $clientRoleId,
-                    'access_id'  => $accessId,
+                    'role_id' => $clientRoleId,
+                    'access_id' => $accessId,
                     'created_at' => $now,
                     'updated_at' => $now,
                 ];
             }
 
-            if (!empty($rows)) {
+            if (! empty($rows)) {
                 DB::table('access_roles')->insertOrIgnore($rows);
             }
         });

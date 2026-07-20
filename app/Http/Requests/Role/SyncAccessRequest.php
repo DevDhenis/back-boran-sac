@@ -24,7 +24,7 @@ class SyncAccessRequest extends FormRequest
     {
         return [
             'access_ids.required' => 'Debe enviar al menos un acceso.',
-            'access_ids.array'    => 'El campo accesos debe ser un arreglo.',
+            'access_ids.array' => 'El campo accesos debe ser un arreglo.',
             'access_ids.*.exists' => 'Uno de los accesos seleccionados no existe en el sistema.',
         ];
     }

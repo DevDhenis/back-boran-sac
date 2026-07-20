@@ -10,10 +10,11 @@ class Access extends Model
     use HasFactory;
 
     protected $table = 'accesses';
+
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'nombre',
+        'name',
         'path',
         'icon',
         'access_id',

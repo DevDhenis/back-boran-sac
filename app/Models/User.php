@@ -11,6 +11,7 @@ class User extends Authenticatable implements JWTSubject
     use HasFactory;
 
     protected $table = 'users';
+
     protected $primaryKey = 'id';
 
     protected $fillable = [
@@ -18,17 +19,17 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'email',
         'email_verified_at',
-        'codigo_verificacion',
-        'codigo_recuperacion',
-        'estado_registro',
+        'verification_code',
+        'recovery_code',
+        'status',
         'role_id',
-        'person_id'
+        'person_id',
     ];
 
     protected $hidden = [
         'password',
-        'codigo_verificacion',
-        'estado_registro',
+        'verification_code',
+        'status',
     ];
 
     public function casts(): array
@@ -62,5 +63,10 @@ class User extends Authenticatable implements JWTSubject
     public function client()
     {
         return $this->hasOne(Client::class, 'person_id', 'person_id');
+    }
+
+    public function employee()
+    {
+        return $this->hasOne(Employee::class, 'person_id', 'person_id');
     }
 }

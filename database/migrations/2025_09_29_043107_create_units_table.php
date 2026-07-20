@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('units', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->string('abreviatura');
+            $table->string('name');
+            $table->string('abbreviation');
             $table->timestamps();
         });
     }

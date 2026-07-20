@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Product\StoreRequest;
 use App\Http\Requests\Product\UpdateRequest;
 use App\Http\Resources\ProductResource;
-use App\Models\Product;
 use App\Models\InventoryManagement;
+use App\Models\Product;
 use App\Support\ImageUploader;
 use Illuminate\Http\JsonResponse;
 
@@ -29,16 +29,20 @@ class ProductController extends Controller
     {
         $data = $request->validated();
 
-        if ($request->hasFile('imagen')) {
-            // Guarda la imagen según el driver (local en dev, Cloudinary en prod).
-            $data['imagen'] = ImageUploader::upload($request->file('imagen'), 'products');
+        // Stock is owned by the inventory ledger: a product is always created with
+        // stock 0 and loaded afterwards through a registered inbound movement.
+        $data['stock'] = 0;
+
+        if ($request->hasFile('image')) {
+            // Guarda la image según el driver (local en dev, Cloudinary en prod).
+            $data['image'] = ImageUploader::upload($request->file('image'), 'products');
         }
 
         Product::create($data);
 
         return response()->json([
             'success' => true,
-            'message' => 'Producto creado correctamente.',
+            'message' => 'Producto creado. Carga su stock desde Inventario → Movimientos.',
         ], 201);
     }
 
@@ -55,9 +59,13 @@ class ProductController extends Controller
     {
         $data = $request->validated();
 
-        if ($request->hasFile('imagen')) {
-            // Reemplaza la imagen (local en dev, Cloudinary en prod).
-            $data['imagen'] = ImageUploader::upload($request->file('imagen'), 'products');
+        // Stock is owned by the inventory ledger; it can only change through
+        // registered movements, never by editing the product directly.
+        unset($data['stock']);
+
+        if ($request->hasFile('image')) {
+            // Reemplaza la image (local en dev, Cloudinary en prod).
+            $data['image'] = ImageUploader::upload($request->file('image'), 'products');
         }
 
         $product->update($data);
@@ -81,7 +89,7 @@ class ProductController extends Controller
     public function stockHistory(Product $product): JsonResponse
     {
         $movimientos = InventoryManagement::where('product_id', $product->id)
-            ->orderByDesc('fecha_movimiento')
+            ->orderByDesc('movement_date')
             ->with(['employee']) // si quieres incluir el empleado responsable
             ->get();
 

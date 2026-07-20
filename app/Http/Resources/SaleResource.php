@@ -17,7 +17,7 @@ class SaleResource extends JsonResource
             'subtotal' => $this->subtotal,
             'tax' => $this->tax,
             'total' => $this->total,
-            'direccion_envio' => $this->direccion_envio,
+            'shipping_address' => $this->shipping_address,
             'items' => SalesItemResource::collection($this->whenLoaded('items')),
             'payments' => PaymentResource::collection($this->whenLoaded('payments')),
         ];

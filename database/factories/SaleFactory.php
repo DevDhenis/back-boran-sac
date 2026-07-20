@@ -13,11 +13,11 @@ class SaleFactory extends Factory
             'employee_id' => \App\Models\Employee::factory(),
             'sale_date' => $this->faker->dateTimeBetween('-30 days', 'now'),
             'status' => $this->faker->randomElement([
-                'pendiente_envio',
-                'en_preparacion',
-                'en_camino',
-                'entregado',
-                'cancelado'
+                'pending_shipment',
+                'in_preparation',
+                'in_transit',
+                'delivered',
+                'cancelled',
             ]),
             'subtotal' => 0,
             'tax' => 0,

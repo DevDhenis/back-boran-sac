@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ShoppingCartResource;
+use App\Models\InventoryManagement;
 use App\Models\Payment;
 use App\Models\Sale;
 use App\Models\SalesItem;
@@ -24,7 +25,7 @@ class ShoppingCartController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Carrito obtenido correctamente.',
-            'data' => new ShoppingCartResource($cart)
+            'data' => new ShoppingCartResource($cart),
         ]);
     }
 
@@ -33,21 +34,21 @@ class ShoppingCartController extends Controller
         $user = $request->user();
         $person = $user->person;
 
-        if (!$person || !$person->client) {
+        if (! $person || ! $person->client) {
             return response()->json([
                 'success' => false,
-                'message' => 'El usuario no está registrado como cliente.'
+                'message' => 'El usuario no está registrado como cliente.',
             ], 422);
         }
 
         $client = $person->client;
 
         $request->validate([
-            'card_number'      => 'required|digits:16',
-            'card_holder'      => 'required|string|max:255',
+            'card_number' => 'required|digits:16',
+            'card_holder' => 'required|string|max:255',
             'card_expiration' => ['required', 'regex:/^(0[1-9]|1[0-2])\/\d{2}$/'],
-            'card_cvv'         => 'required|digits:3',
-            'phone'            => 'required|string|max:20',
+            'card_cvv' => 'required|digits:3',
+            'phone' => 'required|string|max:20',
             'shipping_address' => 'nullable|string|max:255',
         ]);
 
@@ -55,10 +56,10 @@ class ShoppingCartController extends Controller
             ->where('user_id', $user->id)
             ->first();
 
-        if (!$cart || $cart->items->isEmpty()) {
+        if (! $cart || $cart->items->isEmpty()) {
             return response()->json([
                 'success' => false,
-                'message' => 'El carrito está vacío'
+                'message' => 'El carrito está vacío',
             ], 422);
         }
 
@@ -67,10 +68,10 @@ class ShoppingCartController extends Controller
             foreach ($cart->items as $item) {
                 $product = $item->product;
 
-                if ($item->cantidad > $product->stock) {
+                if ($item->quantity > $product->stock) {
                     return response()->json([
                         'success' => false,
-                        'message' => "Stock insuficiente para {$product->nombre}"
+                        'message' => "Stock insuficiente para {$product->name}",
                     ], 422);
                 }
             }
@@ -80,42 +81,59 @@ class ShoppingCartController extends Controller
             $total = $subtotal + $tax;
 
             $sale = Sale::create([
-                'customer_id'     => $client->id,
-                'employee_id'     => null,
-                'sale_date'       => now(),
-                'status'          => 'pendiente_envio',
-                'direccion_envio' => $request->shipping_address,
-                'subtotal'        => $subtotal,
-                'tax'             => $tax,
-                'total'           => $total,
+                'customer_id' => $client->id,
+                'employee_id' => null,
+                'sale_date' => now(),
+                'status' => 'pending_shipment',
+                'shipping_address' => $request->shipping_address,
+                'subtotal' => $subtotal,
+                'tax' => $tax,
+                'total' => $total,
             ]);
 
             foreach ($cart->items as $item) {
 
                 SalesItem::create([
-                    'sale_id'   => $sale->id,
+                    'sale_id' => $sale->id,
                     'product_id' => $item->product_id,
-                    'quantity'  => $item->cantidad,
-                    'price'     => $item->precio_unitario,
-                    'discount'  => 0,
-                    'subtotal'  => $item->subtotal,
+                    'quantity' => $item->quantity,
+                    'price' => $item->unit_price,
+                    'discount' => 0,
+                    'subtotal' => $item->subtotal,
                 ]);
 
+                // Stock leaves through the inventory ledger (traceable), not a direct decrement.
                 $product = $item->product;
-                $product->stock -= $item->cantidad;
+                $stockBefore = (float) $product->stock;
+                $stockAfter = $stockBefore - (float) $item->quantity;
+
+                InventoryManagement::create([
+                    'product_id' => $product->id,
+                    'sale_id' => $sale->id,
+                    'employee_id' => null,
+                    'movement_type' => 'outbound',
+                    'origin' => 'sale',
+                    'quantity' => (float) $item->quantity,
+                    'reason' => "Venta #{$sale->id}",
+                    'stock_before' => $stockBefore,
+                    'stock_after' => $stockAfter,
+                    'movement_date' => now(),
+                ]);
+
+                $product->stock = $stockAfter;
                 $product->save();
             }
 
             Payment::create([
-                'sale_id'        => $sale->id,
-                'method'         => 'tarjeta',
-                'amount'         => $total,
-                'payment_date'   => now(),
-                'status'         => 'confirmado',
-                'card_holder'    => $request->card_holder,
-                'card_last4'     => substr($request->card_number, -4),
+                'sale_id' => $sale->id,
+                'method' => 'card',
+                'amount' => $total,
+                'payment_date' => now(),
+                'status' => 'confirmed',
+                'card_holder' => $request->card_holder,
+                'card_last4' => substr($request->card_number, -4),
                 'card_expiration' => $request->card_expiration,
-                'phone'          => $request->phone,
+                'phone' => $request->phone,
             ]);
 
             $cart->items()->delete();
@@ -125,7 +143,7 @@ class ShoppingCartController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Compra realizada correctamente',
-                'sale_id' => $sale->id
+                'sale_id' => $sale->id,
             ], 201);
         });
     }

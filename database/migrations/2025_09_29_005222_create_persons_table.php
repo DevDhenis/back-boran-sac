@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('persons', function (Blueprint $table) {
             $table->id();
-            $table->string('nombres');
-            $table->string('apellido_paterno')->nullable();
-            $table->string('apellido_materno')->nullable();
-            $table->string('direccion')->nullable();
-            $table->string('imagen')->nullable();
-            $table->string('numero_documento')->nullable()->unique();
+            $table->string('first_name');
+            $table->string('last_name')->nullable();
+            $table->string('second_last_name')->nullable();
+            $table->string('address')->nullable();
+            $table->string('image')->nullable();
+            $table->string('document_number')->nullable()->unique();
             $table->foreignId('document_type_id')->nullable()->constrained('document_types');
             $table->timestamps();
         });

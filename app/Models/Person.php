@@ -10,15 +10,16 @@ class Person extends Model
     use HasFactory;
 
     protected $table = 'persons';
+
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'nombres',
-        'apellido_paterno',
-        'apellido_materno',
-        'direccion',
-        'imagen',
-        'numero_documento',
+        'first_name',
+        'last_name',
+        'second_last_name',
+        'address',
+        'image',
+        'document_number',
         'document_type_id',
     ];
 
@@ -49,6 +50,6 @@ class Person extends Model
 
     public function contactTypes()
     {
-        return $this->belongsToMany(ContactType::class, 'contact_type_person')->withPivot('valor');
+        return $this->belongsToMany(ContactType::class, 'contact_type_person')->withPivot('value');
     }
 }
