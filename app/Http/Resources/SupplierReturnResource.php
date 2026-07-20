@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class SupplierReturnResource extends JsonResource
+{
+    public function toArray(Request $request): array
+    {
+        $person = $this->employee?->person;
+
+        return [
+            'id' => $this->id,
+            'return_date' => $this->return_date,
+            'reason' => $this->reason,
+            'credit_status' => $this->credit_status,
+            'supplier' => $this->whenLoaded('supplier', fn () => [
+                'id' => $this->supplier->id,
+                'name' => $this->supplier->name,
+                'ruc' => $this->supplier->ruc,
+            ]),
+            'employee' => $person ? trim("{$person->first_name} {$person->last_name}") : '—',
+            'items' => $this->whenLoaded('items', fn () => $this->items->map(fn ($item) => [
+                'id' => $item->id,
+                'quantity' => (float) $item->quantity,
+                'product' => $item->relationLoaded('product') && $item->product ? [
+                    'id' => $item->product->id,
+                    'internal_code' => $item->product->internal_code,
+                    'name' => $item->product->name,
+                ] : null,
+            ])),
+        ];
+    }
+}

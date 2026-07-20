@@ -31,6 +31,11 @@ class Product extends Model
         'final_price',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
     protected $casts = [
         'on_promotion' => 'boolean',
     ];

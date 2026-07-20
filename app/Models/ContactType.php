@@ -19,6 +19,11 @@ class ContactType extends Model
         'icon',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
     public function persons()
     {
         return $this->belongsToMany(Person::class, 'contact_type_person')->withPivot('value');

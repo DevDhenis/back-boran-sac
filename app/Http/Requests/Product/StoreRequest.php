@@ -33,15 +33,15 @@ class StoreRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'image.image' => 'El archivo debe ser una image válida (JPG, JPEG, PNG)',
+            'image.image' => 'El archivo debe ser una imagen válida (JPG, JPEG, PNG)',
             'image.mimes' => 'Solo se permiten imágenes en formato JPG, JPEG o PNG. Formatos como WEBP no son compatibles',
-            'image.max' => 'La image no debe pesar más de 2MB',
+            'image.max' => 'La imagen no debe pesar más de 2MB',
             'internal_code.required' => 'El código interno es obligatorio',
             'internal_code.unique' => 'Este código interno ya está registrado',
-            'name.required' => 'El name del producto es obligatorio',
+            'name.required' => 'El nombre del producto es obligatorio',
             'unit_price.required' => 'El precio unitario es obligatorio',
             'wholesale_unit_price.required' => 'El precio por mayor es obligatorio',
-            'wholesale_min_quantity.required' => 'La quantity mínima por mayor es obligatoria',
+            'wholesale_min_quantity.required' => 'La cantidad mínima por mayor es obligatoria',
             'unit_id.required' => 'Debe seleccionar una unidad',
             'product_category_id.required' => 'Debe seleccionar una categoría',
         ];
@@ -53,7 +53,7 @@ class StoreRequest extends FormRequest
             'internal_code' => 'código interno',
             'unit_price' => 'precio unitario',
             'wholesale_unit_price' => 'precio por mayor',
-            'wholesale_min_quantity' => 'quantity mínima por mayor',
+            'wholesale_min_quantity' => 'cantidad mínima por mayor',
             'unit_id' => 'unidad',
             'product_category_id' => 'categoría',
         ];

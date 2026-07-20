@@ -28,9 +28,9 @@ class UpdateRoleRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'El name del rol es obligatorio.',
-            'name.unique' => 'El name del rol ya existe.',
-            'name.max' => 'El name no debe superar 255 caracteres.',
+            'name.required' => 'El nombre del rol es obligatorio.',
+            'name.unique' => 'El nombre del rol ya existe.',
+            'name.max' => 'El nombre no debe superar 255 caracteres.',
             'description.max' => 'La descripción no debe superar 255 caracteres.',
         ];
     }

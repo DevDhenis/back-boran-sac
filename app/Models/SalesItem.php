@@ -19,6 +19,11 @@ class SalesItem extends Model
         'subtotal',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
     protected $casts = [
         'quantity' => 'decimal:2',
     ];

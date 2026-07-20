@@ -22,6 +22,11 @@ class Payment extends Model
         'phone',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
     public function sale(): BelongsTo
     {
         return $this->belongsTo(Sale::class);

@@ -22,7 +22,7 @@ class StoreInventoryRequest extends FormRequest
     {
         return [
             'product_id' => 'required|exists:products,id',
-            'movement_type' => 'required|in:inbound,outbound,adjustment',
+            'movement_type' => 'required|in:outbound,adjustment',
             'quantity' => 'required|numeric|min:0.001',
             'reason' => 'nullable|string|max:255',
             'employee_id' => 'nullable|exists:employees,id',

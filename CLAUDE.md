@@ -53,6 +53,7 @@ php artisan migrate:fresh --seed   # recrear BD + seeders (resetea datos)
     - **`jwt`** (`JwtMiddleware`) — valida el token; devuelve 401 con `{success:false, message}` si es inválido/expirado/ausente.
     - **`access:<slug>`** (`CheckAccess`) — autorización por permiso. Compara (case-insensitive) `<slug>` contra `auth()->user()->role->accesses[].name`. Ej: `access:ventas`.
 - El modelo de permisos es: `User → role_id → Role → (pivot access_roles) → Access`. Para dar/quitar permisos se sincroniza la pivote vía `RoleController@syncAccesses`.
+- **Verificación de correo obligatoria para login**: `login` bloquea a usuarios con `email_verified_at` null y responde **403** `{ success:false, requires_verification:true }` (no entrega token). `register` **no devuelve token** (el usuario debe verificar primero). `auth/verify-email` y `auth/resend-code` son **públicos** (validan por email+código, sin JWT). El código de verificación vive en `users.verification_code`; el de recuperación en `users.recovery_code`.
 
 ### Modelo de dominio — `Person` es el eje
 
@@ -109,4 +110,4 @@ php artisan db:seed --force                 # todo el DatabaseSeeder
 # o para uno solo:  php artisan db:seed --class=ProductCategorySeeder --force
 ```
 
-(Los valores reales viven en el panel de Render/Aiven; nunca se commitean.) `DatabaseSeeder` siembra **datos base + exactamente 2 cuentas completas**: `admin` (rol Administrador General, con faceta `Employee`) y `cliente` (rol Cliente, con faceta `Client`), más tipos de documento, roles, accesos, unidades y categorías. Productos/ventas/inventario NO se siembran (se cargan desde la app). Nota: `auth()->user()->employee` y `->client` resuelven la faceta vía `hasOne(..., 'person_id', 'person_id')` en el modelo `User`.
+(Los valores reales viven en el panel de Render/Aiven; nunca se commitean.) `DatabaseSeeder` siembra **datos base + 2 cuentas**: `admin` (rol Administrador General; **no** es colaborador, sin faceta `Employee`) y `cliente` (rol Cliente, con faceta `Client`), más tipos de documento, roles, accesos, unidades y categorías. Productos/ventas/inventario/colaboradores NO se siembran ahí (los colaboradores van en `DemoDataSeeder`). Nota: `auth()->user()->employee` y `->client` resuelven la faceta vía `hasOne(..., 'person_id', 'person_id')` en el modelo `User`.

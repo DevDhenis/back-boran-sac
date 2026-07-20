@@ -13,6 +13,11 @@ class ShoppingCart extends Model
         'total',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
     protected $casts = [
         'total' => 'decimal:2',
     ];
